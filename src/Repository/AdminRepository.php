@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Admin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -27,7 +28,7 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
     public function save(Admin $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
-
+        
         if ($flush) {
             $this->getEntityManager()->flush();
         }
@@ -56,20 +57,22 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->save($user, true);
     }
 
-//    /**
-//     * @return Admin[] Returns an array of Admin objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+   /**
+    * @return Admin[] Returns an array of Admin objects
+    */
+   public function findByExampleField($value): array
+   {
+       return $this->createQueryBuilder('a')
+           ->andWhere('a.roles LIKE :role')
+           ->setParameter('role', $value)
+           ->orderBy('a.id', 'ASC')
+           ->setMaxResults(10)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
+
+   
 
 //    public function findOneBySomeField($value): ?Admin
 //    {

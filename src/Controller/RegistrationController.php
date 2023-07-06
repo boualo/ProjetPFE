@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Admin;
 use App\Form\RegistrationFormType;
+use App\Repository\AdminRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +18,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
+    private $adminRepo;
+    public function __construct(AdminRepository $adminRepository){
+        $this->adminRepo = $adminRepository;
+    }
+
     #[Route('/inscription', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -31,7 +39,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            //$user->setRoles($form->get('roles')->getData());
+            //$user->setRoles([$_POST['roles']]);
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
@@ -42,5 +50,38 @@ class RegistrationController extends AbstractController
         return $this->render('registration/connexion.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    // #[Route('/admins' , 'app_admins')]
+    // public function getAdmins(String $role) : Response{
+    //     $admins = $this->adminRepo->findAllByRole($role);
+    //     return $this->render('admin/admins.html.twig', [
+    //         'admins' => $admins
+    //     ]);
+    // }
+
+    #[Route('/admins/{role}', name:"admins_by_role")]
+    public function getAdminsByRole($role, EntityManagerInterface $entityManager)
+    {
+        if($role == 'admin')
+            $role="ROLE_ADMIN";
+        $adminRepository = $entityManager->getRepository(Admin::class);
+        
+        $admins = $adminRepository->createQueryBuilder('a')
+            ->where('a.roles LIKE :role')
+            ->setParameter('role', '%"'.$role.'"%')
+            ->getQuery()
+            ->getResult();
+        
+            return $this->render('registration/admins.html.twig', [
+                'admins' => $admins
+            ]);
+    }
+
+    #[Route('/admin/delete/{id}' , name:'delete')]
+    public function delete($id){
+        $this->adminRepo->delete($id);
+
+        return $this->renderToRoute('admins_by_role');
     }
 }

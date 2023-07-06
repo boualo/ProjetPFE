@@ -2,20 +2,18 @@
 
 namespace App\Form;
 
-use App\Entity\Admin;
+use App\Entity\Eleve;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
+class EleveFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -97,13 +95,34 @@ class RegistrationFormType extends AbstractType
                     'name' => 'sexe'
                 ]
             ])
+            ->add('codeMassar', TextType::class, [
+                'label' => 'Code Massar',
+                'attr' => [
+                    'class' => 'form-control',
+                    'name' => 'codeMassar',
+                ],
+            ])
+            ->add('dateNaissance', DateType::class, [
+                'label' => 'Date de Naissance',
+                'attr' => [
+                    'class' => 'form-control',
+                    'name' => 'dateNaissance',
+                ],
+            ])
+            ->add('lieuNaissance', TextType::class, [
+                'label' => 'Lieu de Naissance',
+                'attr' => [
+                    'class' => 'form-control',
+                    'name' => 'lieuNaissance',
+                ],
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Admin::class,
+            'data_class' => Eleve::class,
         ]);
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AdminRepository::class)]
-#[UniqueEntity(fields: ['nomUtilisateur'], message: 'There is already an account with this nomUtilisateur')]
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name:"role",type:"string")]
 #[ORM\DiscriminatorMap(["admin"=>"Admin", "eleve"=>"Eleve", "tuteur"=>"Tuteur"])]
@@ -20,9 +20,6 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $nomUtilisateur = null;
 
     #[ORM\Column]
     private array $roles = [];
@@ -51,21 +48,12 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $CIN = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNomUtilisateur(): ?string
-    {
-        return $this->nomUtilisateur;
-    }
-
-    public function setNomUtilisateur(string $nomUtilisateur): static
-    {
-        $this->nomUtilisateur = $nomUtilisateur;
-
-        return $this;
     }
 
     /**
@@ -75,7 +63,7 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->nomUtilisateur;
+        return (string) $this->email;
     }
 
     /**
@@ -182,6 +170,18 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCIN(?string $CIN): static
     {
         $this->CIN = $CIN;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }
