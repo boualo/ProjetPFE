@@ -80,8 +80,8 @@ class RegistrationController extends AbstractController
 
     #[Route('/admin/delete/{id}' , name:'delete')]
     public function delete($id){
-        $this->adminRepo->delete($id);
+        $this->adminRepo->remove($id);
 
-        return $this->renderToRoute('admins_by_role');
+        return $this->redirectToRoute('admins_by_role');
     }
 }
