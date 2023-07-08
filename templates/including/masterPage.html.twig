@@ -7,6 +7,7 @@
   <title>{% block title %}Welcome!{% endblock %} </title>
   <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon.png') }}" />
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
+  <script src="https://kit.fontawesome.com/a1820a8459.js" crossorigin="anonymous"></script>
   {% block head %} {% endblock %}
 </head>
 
@@ -38,7 +39,7 @@
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
-                <span class="hide-menu">Dashboard</span>
+                <span class="hide-menu">Accueil</span>
               </a>
             </li>
             <li class="nav-small-cap">
@@ -46,11 +47,59 @@
               <span class="hide-menu">Ajouter</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'admin'}) }}" aria-expanded="false">
+              <a class="sidebar-link" href="{{ path('admins_by_role' , { 'role':'admin' }) }}" aria-expanded="false">
                 <span>
                   <i class="ti ti-article"></i>
                 </span>
                 <span class="hide-menu">Compte Admin</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'direct'}) }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Directeur</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'administ'}) }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Administrateur</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'EP'}) }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Encadrant Péda.</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'ensei'}) }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Enseignant</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('eleves') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Elève</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('tuteurs') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Compte Tuteur</span>
               </a>
             </li>
             <li class="sidebar-item">
@@ -152,7 +201,6 @@
           </ul>
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-              <a href="https://adminmart.com/product/modernize-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Download Free</a>
               <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                   aria-expanded="false">

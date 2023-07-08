@@ -2,12 +2,9 @@
 
 namespace App\Form;
 
-use App\Entity\Eleve;
-use PharIo\Manifest\Email;
+use App\Entity\Admin;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,11 +12,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class EleveFormType extends AbstractType
+class TuteurFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('titre', TextType::class, [
+                'label' => 'Titre de tuteur',
+                'attr' => [
+                    'class' => 'form-control',
+                    'name' => 'titre',
+                ],
+            ])
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
@@ -48,7 +52,15 @@ class EleveFormType extends AbstractType
                     'name' => 'tel',
                 ],
             ])
-            ->add('email', EmailType::class, [
+            ->add('CIN', TextType::class, [
+                'label' => 'CIN',
+                'attr' => [
+                    'class' => 'form-control',
+                    'name' => 'CIN',
+                ],
+            ])
+            
+            ->add('email', TextType::class, [
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'form-control',
@@ -89,34 +101,13 @@ class EleveFormType extends AbstractType
                     'name' => 'sexe'
                 ]
             ])
-            ->add('codeMassar', TextType::class, [
-                'label' => 'Code Massar',
-                'attr' => [
-                    'class' => 'form-control',
-                    'name' => 'codeMassar',
-                ],
-            ])
-            ->add('dateNaissance', DateType::class, [
-                'label' => 'Date de Naissance',
-                'attr' => [
-                    'class' => 'form-control',
-                    'name' => 'dateNaissance',
-                ],
-            ])
-            ->add('lieuNaissance', TextType::class, [
-                'label' => 'Lieu de Naissance',
-                'attr' => [
-                    'class' => 'form-control',
-                    'name' => 'lieuNaissance',
-                ],
-            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Eleve::class,
+            'data_class' => Admin::class,
         ]);
     }
 }
