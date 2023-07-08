@@ -1,0 +1,48 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Tuteur</h5>
+              <div class="card">
+                <div class="card-body">
+                  <form method="post" action="{{ path('edit_tuteur' , {id:tuteur[0]['id'] }) }}">
+                     <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Nom</label>
+                      <input type="text" value="{{ tuteur[0]['nom'] }}" class="form-control" id="exampleInputPassword1" name="nom">
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Prénom</label>
+                      <input type="text" value="{{ tuteur[0]['prenom'] }}" class="form-control" id="exampleInputPassword1"name="prenom">
+                    </div>
+                     <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">CIN</label>
+                      <input type="text" value="{{ tuteur[0]['CIN'] }}" class="form-control" id="exampleInputPassword1"name="cin">
+                    </div> <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Email</label>
+                      <input type="email" value="{{ tuteur[0]['email'] }}" class="form-control" id="exampleInputPassword1"name="email">
+                    </div> <div class="mb-3">
+                      <label for="exampleInputPassword1" class="form-label">Adresse</label>
+                      <input type="text" value="{{ tuteur[0]['adresse'] }}" class="form-control" id="exampleInputPassword1"name="Adresse">
+                    </div> <div class="mb-3">
+                      <label for="disabledSelect" class="form-label">Sexe</label>
+                        <select id="disabledSelect" class="form-select">
+                          {% if tuteur[0]['sexe'] == 'F' %}
+                              <option value="F" selected>Femme</option>
+                              <option value="H">Homme</option>
+                          {% else %}
+                              <option value="H" selected>Homme</option>
+                              <option value="F">Femme</option>
+                          {% endif %}
+                        </select>
+                    </div> <div class="mb-3">
+
+                      <label for="exampleInputPassword1" class="form-label">Téléphone</label>
+                      <input type="text" value="{{ tuteur[0]['tel']}}" class="form-control" id="exampleInputPassword1"name="tel">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}  

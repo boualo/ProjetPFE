@@ -14,7 +14,7 @@ class Eleve extends Admin
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 10,unique:true)]
     private ?string $codeMassar = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
