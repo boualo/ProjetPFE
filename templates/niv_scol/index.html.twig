@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NivScol index{% endblock %}
+
+{% block body %}
+    <h1>NivScol index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Labelle</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for niv_scol in niv_scols %}
+            <tr>
+                <td>{{ niv_scol.id }}</td>
+                <td>{{ niv_scol.labelle }}</td>
+                <td>
+                    <a href="{{ path('app_niv_scol_show', {'id': niv_scol.id}) }}">show</a>
+                    <a href="{{ path('app_niv_scol_edit', {'id': niv_scol.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_niv_scol_new') }}">Create new</a>
+{% endblock %}

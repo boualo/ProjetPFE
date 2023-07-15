@@ -1,0 +1,18 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Ajouter une activité parascolaire</h5>
+              <div class="card">
+                <div class="card-body">
+                  {{ form_start(activiteForm) }}
+                      {{ form_row(activiteForm.titre) }}
+                      {{ form_row(activiteForm.description) }}
+                      {{ form_row(activiteForm.photo) }}
+                      <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+                  {{ form_end(activiteForm) }}
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %} 

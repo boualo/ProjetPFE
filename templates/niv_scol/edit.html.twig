@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit NivScol{% endblock %}
+
+{% block body %}
+    <h1>Edit NivScol</h1>
+
+    {{ include('niv_scol/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_niv_scol_index') }}">back to list</a>
+
+    {{ include('niv_scol/_delete_form.html.twig') }}
+{% endblock %}

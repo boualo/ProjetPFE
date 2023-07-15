@@ -80,22 +80,29 @@ class EleveController extends AbstractController{
 
     public function show($id){
         $eleve=$this->eleveRepo->find($id);
-        return $this->render('eleves/modifierEleve.html.twig',[
+        return $this->render('eleve/modifierEleve.html.twig',[
             'eleve' => $eleve,
         ]);
     }
 
     #[Route('/edit_eleve/{id}' , name:'edit_eleve')]
-    public function edit($id,Request $request,ManagerRegistry $doctrine){
+    public function edit($id,Request $request,ManagerRegistry $doctrine,EntityManagerInterface $entityManager){
         $eleve = $doctrine->getRepository(Eleve::class)->find($id);
         
         $form= $this->createForm(EleveFormType::class,$eleve);
         $form->handleRequest($request);
+        
         if($form->isSubmitted() && $form->isValid()){
-            $eleve= $form->getData();
-            $manager=$doctrine->getManager();
-            $manager->persist($eleve);
-            $manager->flush();
+            $eleve->setCodeMassar($form->get('codeMassar')->getData());
+            $eleve->setNom($form->get('nom')->getData());
+            $eleve->setPrenom($form->get('prenom')->getData());
+            $eleve->setEmail($form->get('email')->getData());
+            $eleve->setAdresse($form->get('adresse')->getData());
+            $eleve->setSexe($form->get('sexe')->getData());
+            $eleve->setDateNaissance($form->get('dateNaissance')->getData());
+            $eleve->setLieuNaissance($form->get('lieuNaissance')->getData());
+            $eleve->setTel($form->get('tel')->getData());
+            $entityManager->flush();
 
             return $this->redirectToRoute('list_eleve');
         }

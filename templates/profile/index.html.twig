@@ -1,0 +1,118 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Eléves</h5>
+              <div class="card">
+                <div class="card-body">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-info" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Informations</button>
+                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Sécurité</button>
+                            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Tuteur</button>
+                        </div>
+                    </nav>
+                    <div class="tab-pane fade show active" id="nav-info" role="tabpanel" aria-labelledby="nav-home-tab">                 
+                        <div class="row ">
+                            <div class="col-md-3 mt-3">
+                                <div class="card" >
+                                    <img src="../assets/images/profile/user-1.jpg" style="max-height:25%;" alt="..." >
+                                    <p class="card-title m-0 p-0" style="font-size:15px; text-align:center; font-weight:bold;"></p>
+                                    <p class="card-title m-1 p-0" style="font-size:15px;text-align:center;">
+                                        <b>CNE : {{app.user.codeMassar}}</b> 
+                                        Changer l'image:
+                                        <input class="form-control"  type="file" id="formFile" >
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card" >
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="card-body" style="height:10%">
+                                                <form>
+                                                    <div class="row">
+                                                        <div class="form-group col-md-4">
+                                                            <label for="exampleInputEmail1" class="form-label">Nom</label>
+                                                            <input type="text" class="form-control" name="nom" value="{{ app.user.nom }}">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="exampleInputEmail1" class="form-label">Prénom</label>
+                                                            <input type="email" class="form-control" name="prenom" value="{{ app.user.prenom }}">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            {% if app.user.roles[0]=='ROLE_ELEVE' %}
+                                                                <label for="exampleInputEmail1" class="form-label">Code Massar</label>
+                                                                <input type="text" class="form-control" name="codeMassar" value="{{ app.user.codeMassar }}">
+                                                            {% else %}
+                                                                <label for="exampleInputEmail1" class="form-label">CIN</label>
+                                                                <input type="text" class="form-control" name="cin" value="{{ app.user.cin }}">
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="exampleInputEmail1" class="form-label">Téléphone</label>
+                                                            <input type="text" class="form-control" name="tel" value="{{ app.user.tel }}">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="exampleInputEmail1" class="form-label">Date naissance</label>
+                                                            <input type="date" class="form-control" name="dateNaissance" value="{{ app.user.dateNaissance|date('Y-m-d') }}">
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="exampleInputEmail1" class="form-label">Lieu de naissance</label>
+                                                            <input type="text" class="form-control" name="lieuNaissance" value="{{ app.user.lieuNaissance }}">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="exampleInputEmail1" class="form-label">Email</label>
+                                                            <input type="text" class="form-control" name="email" value="{{ app.user.email }}">
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <label for="exampleInputEmail1" class="form-label">Adresse</label>
+                                                            <input type="text" class="form-control" name="adresse" value="{{ app.user.adresse }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2" style="float:right">
+                                                        <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-right">
+                                                            <a href="#" data-bs-toggle="modal" data-bs-target="#myModal{{app.user.id }}" class="ms-3">
+                                                                <li>
+                                                                <i class="fa fa-trash" aria-hidden="true" style="color:red"></i>
+                                                                </li>
+                                                            </a>
+                                                            <a href="" class="ms-3">
+                                                                <li>
+                                                                <i class="fa fa-pencil-square-o" aria-hidden="true"style="color:green"></i>
+                                                                </li>
+                                                            </a>
+                                                            <div class="modal fade" id="myModal{{app.user.id }}">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <!-- Modal body -->
+                                                                        <div class="modal-body">
+                                                                            Voulez-vous vraiment supprimer cet élément?
+                                                                        </div>
+                                                                        <!-- Modal footer -->
+                                                                        <div class="modal-footer">
+                                                                            <a type="button" class="btn btn-danger"  href="">Oui</a>
+                                                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                       ....
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+ {% endblock %} 

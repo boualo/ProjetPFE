@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NivScol{% endblock %}
+
+{% block body %}
+    <h1>NivScol</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ niv_scol.id }}</td>
+            </tr>
+            <tr>
+                <th>Labelle</th>
+                <td>{{ niv_scol.labelle }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_niv_scol_index') }}">back to list</a>
+
+    <a href="{{ path('app_niv_scol_edit', {'id': niv_scol.id}) }}">edit</a>
+
+    {{ include('niv_scol/_delete_form.html.twig') }}
+{% endblock %}

@@ -51,6 +51,9 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255,unique:true)]
     private ?string $email = null;
 
+    #[ORM\Column(length: 100)]
+    private ?string $photo = "user-1.jpg";
+
     public function getId(): ?int
     {
         return $this->id;
@@ -182,6 +185,18 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }
