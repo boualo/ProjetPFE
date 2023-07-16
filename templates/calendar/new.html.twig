@@ -1,0 +1,11 @@
+{% extends 'including/masterPage.html.twig' %}
+
+{% block title %}Nouveau Calendrier{% endblock %}
+
+{% block body %}
+    <h1>Nouveau Calendrier</h1>
+
+    {{ include('calendar/_form.html.twig') }}
+
+    <a href="{{ path('app_calendar_index') }}">Retour</a>
+{% endblock %}

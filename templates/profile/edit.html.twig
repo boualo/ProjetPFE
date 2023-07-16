@@ -1,0 +1,27 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Eléves</h5>
+              <div class="card">
+                <div class="card-body">
+                  {{ form_errors(userForm) }}
+
+                  {{ form_start(userForm) }}
+                      {{ form_row(userForm.codeMassar) }}
+                      {{ form_row(userForm.nom) }}
+                      {{ form_row(userForm.prenom) }}
+                      {{ form_row(userForm.email) }}
+                      {{ form_row(userForm.adresse) }}
+                      {{ form_row(userForm.dateNaissance) }}
+                      {{ form_row(userForm.lieuNaissance) }}
+                      {{ form_row(userForm.sexe) }}
+                      {{ form_row(userForm.tel) }}
+                       
+                      <button type="submit" class="btn btn-primary mt-3">Créer</button>
+                  {{ form_row(userForm._token) }}
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}  

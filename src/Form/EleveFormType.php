@@ -58,7 +58,7 @@ class EleveFormType extends AbstractType
             ])
             ->add('photo', FileType::class, [
                 'label' => 'Télécharger une image (images seulement)',
-
+                'attr' => ['name' => 'photo'],
                 // unmapped means that this field is not associated to any entity property
                 'mapped' => false,
 

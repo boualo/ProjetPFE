@@ -1,0 +1,66 @@
+
+<div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4 " style="float:left;">Eléves</h5>
+              <p>
+                <a href="{{ path('add_eleve') }}" type="button" class="btn btn-outline-secondary" style="float:right;">Ajout</a>
+              </p>
+              <div class="card mt-5">
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Code Massar</th>
+                        <th>Nom complet</th>
+                        <th>Téléphone</th>
+                        <th>Date et Lieu de Naissance</th>
+                        <th>Adresse</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    	{% for eleve in elevesabsence %}
+                      <tr>
+		                        <td>{{ eleve.codeMassar }} </td>
+		                        <td>{{eleve.nom }} {{eleve.prenom }}</td>
+		                        <td>{{eleve.tel }}</td>
+		                        <td>Né le {{eleve.dateNaissance|date('Y-m-d')}} à {{eleve.lieuNaissance }}</td>
+		                        <td>{{eleve.adresse }}</td>
+		                        <td > 		                        
+		                          <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center ms-2">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#myModal{{eleve.id }}">
+                                      <li>
+                                        <i class="fa fa-trash" aria-hidden="true" style="color:red"></i>
+                                     </li>
+                                    </a>
+                                    <a href="{{ path('eleve' , {id:eleve.id}) }}" class="ms-3">
+                                      <li>
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"style="color:green"></i>
+                                      </li>
+                                    </a>
+		                            <div class="modal fade" id="myModal{{eleve.id }}">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <!-- Modal body -->
+                                      <div class="modal-body">
+                                        Voulez-vous vraiment supprimer cet élément?
+                                      </div>
+                                      <!-- Modal footer -->
+                                      <div class="modal-footer">
+                                        <a type="button" class="btn btn-danger"  href="{{ path('delete_eleve',{id:eleve.id}) }}">Oui</a>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
+                                      </div>
+                                  </div>
+                                </div> 
+		                          </ul>
+		                        </td>
+		                      </tr>
+                    	{% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>

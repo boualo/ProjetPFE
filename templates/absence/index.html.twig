@@ -1,0 +1,109 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Absences</h5>
+              <div class="card">
+                <div class="card-body">
+                  {{ form_start(absenceForm) }}
+                      {{ form_row(absenceForm.dateAbsence) }}
+                      {{ form_row(absenceForm.heureDebut) }}
+                      {{ form_row(absenceForm.heureFin) }}
+                      {# {{ form_row(absenceForm.justification) }} #}
+                      <button type="submit" class="btn btn-primary mt-3">Afficher</button>
+                  {{ form_end(absenceForm) }}
+                  
+<div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4 " style="float:left;">Eléves</h5>
+              
+              <div class="card mt-5">
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Code Massar</th>
+                        <th>Nom complet</th>
+                        <th>Absent(e)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    	{% for eleve in elevesabsence %}
+                        {% if absences != null %}
+                            {% for absence in absences %}
+                                {% if absence.eleve_id != eleve.id %}
+                          {# {{ state = 'btn btn-warning' }} #}
+                                <tr>
+                                <td>{{ eleve.code_massar }} </td>
+                                <td>{{eleve.nom }} {{eleve.prenom }}</td>
+                                <td >
+                                  <p class="text-danger">
+                                    absent
+                                  </p>
+                                </td>
+                              </tr>
+                          
+                                  {% else %}
+                              <tr><form method="POST" action="{{ path('ajouterAbsence') }}">
+                                <td>{{ eleve.code_massar }} </td>
+                                <td>{{eleve.nom }} {{eleve.prenom }}</td>
+                                <td >
+                                  {% if absenceN == null %} 	
+                                  <input type="number" style="width: 0px;display:none" name='id' value="{{ eleve.id }}">
+                                  <input type="text" style="width: 0px;display:none" name="date" value="{{ date }}">
+                                  <input type="text" style="width: 0px;display:none" name="heureD" value="{{ heurActuel[1] }}">
+                                  <input type="text" style="width: 0px;display:none" name="heureF" value="{{ heurActuel[2] }}">
+                         
+                                  <button type="submit"
+                                   class="btn btn-warning">
+                                    Ajouter Absent(e)
+                                  </button>
+                                  {% else %}
+                                  <input type="number" style="width: 0px;display:none" name='id'
+                                        value="{{ eleve.id }}"
+                                  >
+                                  <input type="text" style="width: 0px;display:none" name="date" 
+                                  value="{{ date }}"
+                                  >
+                                  <input type="text" style="width: 0px;display:none" name="heureD" 
+                                  value="{{ heurActuel[1] }}"
+                                  >
+                                  <input type="text" style="width: 0px;display:none" name="heureF" 
+                                  value="{{ heurActuel[2] }}"
+                                  >
+                                  <button type="submit"
+                                   class="btn btn-warning">
+                                    Ajouter Absent(e)
+                                  </button>
+                                  {% endif %}
+                                </td></form>
+                              </tr>
+                                  {% endif %}
+                          
+                              {% endfor %}
+                          {% else %} 
+                             <tr>
+                                <td>{{ eleve.code_massar }}</td>
+                                <td>{{eleve.nom }} {{eleve.prenom }}</td>
+                                <td ><form method="POST" action="{{ path('ajouterAbsence') }}">
+                                  <input type="number" style="width: 0px;display:none" name='id' value="{{ eleve.id }}">
+                                  <input type="text" style="width: 0px;display:none" name="date" value="{{ date }}">
+                                  <input type="text" style="width: 0px;display:none" name="heureD" value="{{ heurActuel[1] }}">
+                                  <input type="text" style="width: 0px;display:none" name="heureF" value="{{ heurActuel[2] }}">
+                                  <button type="submit"
+                                   class="btn btn-warning">
+                                    Ajouter Absent(e)
+                                  </button></form></td>
+                              </tr>
+                          {% endif %}
+                    	{% endfor %}
+                    </tbody>
+                  </table>
+                  {{ date }}
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}
