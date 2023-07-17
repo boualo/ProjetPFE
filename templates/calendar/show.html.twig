@@ -3,6 +3,7 @@
 {% block title %}Calendrier{% endblock %}
 
 {% block body %}
+    <a href="{{ path('app_calendar_index') }}" class="link-secondary"><i class="fa fa-arrow-left m-2 secondary" aria-hidden="true"></i>Retour</a>
     <h1>Calendrier</h1>
 
     <table class="table">
@@ -42,9 +43,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_calendar_index') }}">Retour</a>
-
-    <a href="{{ path('app_calendar_edit', {'id': calendar.id}) }}">Modifier</a>
+    <a href="{{ path('app_calendar_edit', {'id': calendar.id}) }}" class="btn btn-success">Modifier</a>
 
     {{ include('calendar/_delete_form.html.twig') }}
 {% endblock %}

@@ -27,12 +27,16 @@
                 <td>{{ calendar.fin ? calendar.fin|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ calendar.description }}</td>
                 <td>{{ calendar.allDay ? 'Yes' : 'No' }}</td>
-                <td>{{ calendar.backgroundColor }}</td>
-                <td>{{ calendar.borderColor }}</td>
-                <td>{{ calendar.textColor }}</td>
+                <td><div style="width:40px;height:25px;background-color:{{ calendar.backgroundColor }}"></div></td>
+                <td><div style="width:40px;height:25px;background-color:{{ calendar.borderColor }}"></div></td>
+                <td><div style="width:40px;height:25px;background-color:{{ calendar.textColor }}"></div></td>
                 <td>
-                    <a href="{{ path('app_calendar_show', {'id': calendar.id}) }}">Afficher</a>
-                    <a href="{{ path('app_calendar_edit', {'id': calendar.id}) }}">Modifier</a>
+                    <a href="{{ path('app_calendar_show', {'id': calendar.id}) }}" class="link-info">
+                        <i class="fa fa-eye m-3" aria-hidden="true"style="color:blue"></i>
+                    </a>
+                    <a href="{{ path('app_calendar_edit', {'id': calendar.id}) }}" class="link-success">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"style="color:green"></i>
+                    </a>
                 </td>
             </tr>
         {% else %}
@@ -43,5 +47,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_calendar_new') }}">Ajouter</a>
+    <a href="{{ path('app_calendar_new') }}" class="btn btn-primary">Ajouter</a>
 {% endblock %}

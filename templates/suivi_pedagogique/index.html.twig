@@ -1,0 +1,41 @@
+{% extends 'including/masterPage.html.twig' %}
+
+{% block title %}Suivi Pédagogique{% endblock %}
+
+{% block body %}
+    <h1>Suivi Pédagogique</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Nom du fichier</th>
+                <th>Remarque</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for suivi in suivis %}
+            <tr>
+                <td>{{ suivi.titre }}</td>
+                <td>{{ suivi.fichier }}</td>
+                <td>{{ suivi.remarque }}</td>
+                <td>
+                    <a href="{{ path('app_suivi_show', {'id': suivi.id}) }}" class="link-info">
+                        <i class="fa fa-eye m-3" aria-hidden="true"style="color:blue"></i>
+                    </a>
+                    <a href="{{ path('app_suivi_edit', {'id': suivi.id}) }}" class="link-success">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"style="color:green"></i>
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">Pas d'enregistrement</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('add_suivi_pedagogique') }}" class="btn btn-primary">Ajouter</a>
+{% endblock %}

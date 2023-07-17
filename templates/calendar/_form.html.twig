@@ -1,4 +1,20 @@
+{% block stylesheets %}
+    <style>
+        #calendar_debut input[type=date], #calendar_fin input[type=date], input[type=time] {
+            background-color: #fff;
+            padding: 4px;
+            border: solid .5px #000;
+            border-radius: 5px;
+            margin-bottom: 7px;
+         }
+
+         .required, #calendar_all_day {
+            margin-top: 1rem;      
+         }
+    </style>
+    
+{% endblock %}
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+    <button class="btn btn-primary mt-3">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

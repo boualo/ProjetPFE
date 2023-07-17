@@ -6,6 +6,7 @@
 parameters:
     activite_directory: '%kernel.project_dir%/public/uploads/activites'
     profile_directory: '%kernel.project_dir%/public/uploads/profile'
+    pdf_directory: '%kernel.project_dir%/public/uploads/pdfs'
 services:
     # default configuration for services in *this* file
     _defaults:

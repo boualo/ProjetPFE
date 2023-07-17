@@ -118,6 +118,16 @@
                   </a>
                 </li>
               {% endif %}
+              {% if app.user.roles[0] == 'ROLE_ENCADREMENTP'  %}
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ path('app_suivi_index') }}" aria-expanded="false">
+                  <span>
+                    <i class="ti ti-article"></i>
+                  </span>
+                  <span class="hide-menu">Suivi Pédagogique</span>
+                </a>
+              </li>
+              {% endif %}
             {% endif %}
             <li class="sidebar-item">
               <a class="sidebar-link" href="{{ path('app_main') }}" aria-expanded="false">

@@ -1,0 +1,18 @@
+{% extends 'including/masterPage.html.twig'  %}
+{% block body %}
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Ajouter un suivi pédagogique</h5>
+              <div class="card">
+                <div class="card-body">
+                  {{ form_start(SuiviPedaFormType) }}
+                      {{ form_row(SuiviPedaFormType.titre) }}
+                      <div class="mb-3 mt-3">{{ form_row(SuiviPedaFormType.fichier) }}</div>
+                      {{ form_row(SuiviPedaFormType.remarque) }}
+                      <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
+                  {{ form_end(SuiviPedaFormType) }}
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %} 

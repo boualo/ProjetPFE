@@ -11,6 +11,8 @@ class AccueilController extends AbstractController
     #[Route('/', name: 'app_accueil')]
     public function index(): Response
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         return $this->render('accueil/index.html.twig');
     }
 }

@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_suivi_delete', {'id': suivi.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet objet?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ suivi.id) }}">
+    <button class="btn btn-danger mt-3">Supprimer</button>
+</form>

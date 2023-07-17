@@ -3,9 +3,9 @@
 {% block title %}Nouveau Calendrier{% endblock %}
 
 {% block body %}
+    <a href="{{ path('app_calendar_index') }}" class="link-secondary"><i class="fa fa-arrow-left m-2 secondary" aria-hidden="true"></i>Retour</a>
     <h1>Nouveau Calendrier</h1>
 
     {{ include('calendar/_form.html.twig') }}
 
-    <a href="{{ path('app_calendar_index') }}">Retour</a>
 {% endblock %}
