@@ -8,7 +8,7 @@
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Informations</button>
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Sécurité</button>
-                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Tuteur</button>
+                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Classe</button>
                     </div>
                 </nav>
 
@@ -19,10 +19,13 @@
                             <div class="row mt-3">
                                 <div class="col-md-3 ms-2">
                                     <div class="card" >
-                                        <img src="../assets/images/profile/user-1.jpg" style="max-height:25%;" alt="..." >
+                                        <img src="uploads/profile/{{app.user.photo}}" alt="..." >
                                         <p class="card-title m-1 p-0" style="font-size:15px;text-align:center;">
-                                            <b>CNE : {{app.user.codeMassar}}</b> 
-                                             Changer l'image:
+                                            {% if app.user.roles[0]=='ROLE_ELEVE' %}
+                                                <b>CNE : {{app.user.codeMassar}}</b>
+                                            {% else %}
+                                                <b>CIN : {{app.user.cin}}</b>
+                                             {% endif %}
                                             {{ form_row(userForm.photo) }}
                                         </p>
                                     </div>
@@ -42,50 +45,34 @@
                                                         {% if app.user.roles[0]=='ROLE_ELEVE' %}
                                                             {{ form_row(userForm.codeMassar) }}
                                                         {% else %}
-                                                            {{ form_row(userForm.cin) }}
+                                                            {{ form_row(userForm.CIN) }}
                                                         {% endif %}
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         {{ form_row(userForm.tel) }}
                                                     </div>
-                                                    <div class="form-group col-md-4">
-                                                        {{ form_row(userForm.dateNaissance) }}
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        {{ form_row(userForm.lieuNaissance) }}
-                                                    </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-8">
                                                         {{ form_row(userForm.email) }}
+                                                    </div>
+                                                    <div class="form-group col-md-4">
                                                         {{ form_row(userForm.sexe) }}
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-8">
                                                         {{ form_row(userForm.adresse) }}
                                                     </div>
+                                                    {% if app.user.roles[0]=='ROLE_ELEVE' %}
+                                                    <div class="form-group col-md-6">
+                                                        {{ form_row(userForm.dateNaissance) }}
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        {{ form_row(userForm.lieuNaissance) }}
+                                                    </div>
+                                                    {% endif %}
                                                 </div>
                                                  {{ form_row(userForm._token) }}
                                                 <div class="row mt-2" style="float:right">
                                                     <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-right">
-                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#myModal{{app.user.id }}" class="ms-3">
-                                                            <li>
-                                                            <i class="fa fa-trash" aria-hidden="true" style="color:red"></i>
-                                                            </li>
-                                                        </a>
-                                                        <input type="submit" class="btn btn-primary ms-3" value="Modifier"/>
-                                                        <div class="modal fade" id="myModal{{app.user.id }}">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <!-- Modal body -->
-                                                                    <div class="modal-body">
-                                                                        Voulez-vous vraiment supprimer cet élément?
-                                                                    </div>
-                                                                    <!-- Modal footer -->
-                                                                    <div class="modal-footer">
-                                                                        <a type="button" class="btn btn-danger"  href="">Oui</a>
-                                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Non</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div> 
+                                                        <input type="submit" class="btn btn-primary m-2" value="Modifier"/>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -95,8 +82,59 @@
                             </div>
                         </form>
                     </div>
-                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">profike</div>
-                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="card-body">
+                            <h4>Changer le mot de passe</h4>
+                            <form method="post" action="{{ path('edit_password') }}">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="">Mot de passe actuel</label>
+                                        <input type="password" class="form-control" name="actPwd"/>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="">Nouveau mot de passe</label>
+                                        <input type="password" class="form-control" name="newPwd"/>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="">Confirmer le nouveau mot de passe</label>
+                                        <input type="password" class="form-control" name="conNewPwd"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" style="float:right">
+                                <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-right">
+                                    <input type="submit" class="btn btn-primary m-2" name="edit_pwd" value="Changer"/>
+                                </ul>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        <div class="card-body">
+                            <h4>Changer le mot de passe</h4>
+                            <form method="post" action="{{ path('edit_password') }}">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="">Mot de passe actuel</label>
+                                        <input type="password" class="form-control" name="actPwd"/>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="">Nouveau mot de passe</label>
+                                        <input type="password" class="form-control" name="newPwd"/>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="">Confirmer le nouveau mot de passe</label>
+                                        <input type="password" class="form-control" name="conNewPwd"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" style="float:right">
+                                <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-right">
+                                    <input type="submit" class="btn btn-primary m-2" name="edit_pwd" value="Changer"/>
+                                </ul>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

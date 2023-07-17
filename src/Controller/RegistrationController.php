@@ -55,7 +55,8 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/connexion.html.twig', [
             'registrationForm' => $form->createView(),
-            'title' => $title
+            'title' => $title,
+            'action'=>'ajouter'
         ]);
     }
 
@@ -101,14 +102,31 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/Modifier/{id}',name:"show_admin")]
-    public function show($id) {
+    public function show($id,Request $request,EntityManagerInterface $entityManager) {
         $session = $this->requestStack->getSession();
         $admin=$this->adminRepo->find($id);
         $title = $session->get('title');
-        
+        $form = $this->createForm(RegistrationFormType::class,$admin);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            // encode the plain password
+            
+            $role= $session->get('currRole');
+            $admin->setRoles([$role]);
+            $entityManager->persist($admin);
+            $entityManager->flush();
+            // do anything else you need here, like send an email
+
+            return $this->redirectToRoute('admins_by_role',[
+                'role'=>$role,
+                'title' => $title
+            ]);;
+        }
         return $this->render('registration/connexion.html.twig',[
             'admin' => $admin,
-            'title' => $title
+            'title' => $title,
+            'registrationForm' => $form->createView(),
+            'action'=>'modifier'
         ]);
     }
 
@@ -121,6 +139,7 @@ class RegistrationController extends AbstractController
         $entityManager->flush();
         $role= $session->get('currRole');
         $title = $session->get('title');
+        
         return $this->redirectToRoute('admins_by_role',[
             'role'=>$role,
             'title' => $title

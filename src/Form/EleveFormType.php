@@ -43,7 +43,7 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('tel', TextType::class, [
-                'label' => 'Numéro de téléphone',
+                'label' => 'Téléphone',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'tel',
@@ -57,8 +57,11 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('photo', FileType::class, [
-                'label' => 'Télécharger une image (images seulement)',
-                'attr' => ['name' => 'photo'],
+                'label' => 'Changer l\'image:',
+                'attr' => [
+                    'name' => 'photo',
+                    'class' => 'form-control'
+                ],
                 // unmapped means that this field is not associated to any entity property
                 'mapped' => false,
 
@@ -122,6 +125,7 @@ class EleveFormType extends AbstractType
             ])
             ->add('dateNaissance', DateType::class, [
                 'label' => 'Date de Naissance',
+                'widget' => 'single_text',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'dateNaissance',

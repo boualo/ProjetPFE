@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AdminRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email')]
+#[UniqueEntity(fields: ['email'], message: "<span style='color: red;'>Il existe déjà un compte avec cet email</span>")]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name:"role",type:"string")]
 #[ORM\DiscriminatorMap(["admin"=>"Admin", "eleve"=>"Eleve", "tuteur"=>"Tuteur"])]

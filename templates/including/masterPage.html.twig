@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Welcome!{% endblock %} </title>
-  <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon.png') }}" />
+  <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/dark-logo.png') }}" />
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
   <script src="https://kit.fontawesome.com/a1820a8459.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.css" integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
@@ -22,8 +22,8 @@
       <!-- Sidebar scroll-->
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-          <a href="./index.html" class="text-nowrap logo-img">
-            <img src="{{ asset('assets/images/logos/dark-logo.jpg') }}" width="180" alt="" />
+          <a href="{{ path('app_accueil') }}" class="text-nowrap logo-img">
+            <img src="{{ asset('assets/images/logos/dark-logo.png') }}" width="180" alt="" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -37,7 +37,7 @@
               <span class="hide-menu">Listes</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./index.html" aria-expanded="false">
+              <a class="sidebar-link" href="{{ path('app_accueil') }}" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
@@ -48,140 +48,83 @@
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Ajouter</span>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , { 'role':'admin' }) }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Admin</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'direct'}) }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Directeur</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'administ'}) }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Administrateur</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'EP'}) }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Encadrant Péda.</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'ensei'}) }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Enseignant</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('eleves') }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Elève</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="{{ path('tuteurs') }}" aria-expanded="false">
-                <span>
-                  <i class="ti ti-article"></i>
-                </span>
-                <span class="hide-menu">Compte Tuteur</span>
-              </a>
-            </li>
+            {% if (app.user.roles[0] != 'ROLE_ELEVE' and app.user.roles[0] != 'ROLE_TUTEUR') %}
+              {% if (app.user.roles[0] == 'ROLE_SUPERADMIN') %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('admins_by_role' , { 'role':'admin' }) }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Admin</span>
+                  </a>
+                </li>
+              {% endif %}
+
+              {% if app.user.roles[0] == 'ROLE_AdMIN' or app.user.roles[0] == 'ROLE_SUPERADMIN' %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'direct'}) }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Directeur</span>
+                  </a>
+                </li>
+              {% endif %}
+              {% if app.user.roles[0] == 'ROLE_DIRECTEUR' %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'ROLE_ADMINISTRATEUR'}) }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Administrateur</span>
+                  </a>
+                </li>
+              {% endif %}
+              {% if app.user.roles[0] == 'ROLE_ADMIN' or app.user.roles[0] == 'ROLE_DIRECTEUR' %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'EP'}) }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Encadrant Péda.</span>
+                  </a>
+                </li>
+              {% endif %}
+              {% if app.user.roles[0] == 'ROLE_ADMIN' %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('admins_by_role' , {'role':'ensei'}) }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Enseignant</span>
+                  </a>
+                </li>
+              {% endif %}
+              {% if app.user.roles[0] == 'ROLE_ADMINISTRATEUR' %}
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('eleves') }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Elève</span>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a class="sidebar-link" href="{{ path('tuteurs') }}" aria-expanded="false">
+                    <span>
+                      <i class="ti ti-article"></i>
+                    </span>
+                    <span class="hide-menu">Compte Tuteur</span>
+                  </a>
+                </li>
+              {% endif %}
+            {% endif %}
             <li class="sidebar-item">
               <a class="sidebar-link" href="{{ path('app_main') }}" aria-expanded="false">
                 <span>
                   <i class="ti ti-article"></i>
                 </span>
                 <span class="hide-menu">Calendrier</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-alert-circle"></i>
-                </span>
-                <span class="hide-menu">Alerts</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-cards"></i>
-                </span>
-                <span class="hide-menu">Card</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-file-description"></i>
-                </span>
-                <span class="hide-menu">Forms</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-typography"></i>
-                </span>
-                <span class="hide-menu">Typography</span>
-              </a>
-            </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">AUTH</span>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-login"></i>
-                </span>
-                <span class="hide-menu">Login</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-user-plus"></i>
-                </span>
-                <span class="hide-menu">Register</span>
-              </a>
-            </li>
-            <li class="nav-small-cap">
-              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-              <span class="hide-menu">EXTRA</span>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-mood-happy"></i>
-                </span>
-                <span class="hide-menu">Icons</span>
-              </a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-aperture"></i>
-                </span>
-                <span class="hide-menu">Sample Page</span>
               </a>
             </li>
           </ul>
@@ -214,7 +157,7 @@
               <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                   aria-expanded="false">
-                  <p class="m-2" style="font-size:16px;"> {{ app.user.email|slice(0,(app.user.email|length)-10) }} </p><img src="assets/images/profile/{{app.user.photo}}" alt="" width="35" height="35" class="rounded-circle">
+                  <p class="m-2" style="font-size:16px;"> {{ app.user.email|slice(0,(app.user.email|length)-10) }} </p><img src="uploads/profile/{{app.user.photo}}" alt="" width="35" height="35" class="rounded-circle">
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">

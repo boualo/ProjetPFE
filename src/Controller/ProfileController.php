@@ -2,22 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Admin;
-use App\Entity\Eleve;
-use App\Entity\user;
 use App\Form\EleveFormType;
-use App\Form\userFormType;
-use App\Repository\AdminRepository;
-use App\Repository\userRepository;
+use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfileController extends AbstractController
@@ -28,23 +21,21 @@ class ProfileController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+
     #[Route('/profile', name: 'app_profile')]
-    public function index(): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        
-        return $this->render('profile/index.html.twig');
-    } 
-
-    #[Route('/edit-profile', name: 'edit_profile')]
-    public function edit(Request $request, EntityManagerInterface $entityManager, ManagerRegistry $doctrine, SluggerInterface $slugger): Response
-    {
+        if(!$this->getUser())
+            $this->redirectToRoute('app_login');
         $currentUser = $this->getUser();
-        $userForm = $this->createForm(EleveFormType::class, $currentUser);
+        if($currentUser->getRoles()[0]=="ROLE_ADMIN")
+            $userForm = $this->createForm(RegistrationFormType::class, $currentUser);
+        else
+            $userForm = $this->createForm(EleveFormType::class, $currentUser);
         $userForm->handleRequest($request);
-
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
+        if ($userForm->isSubmitted()) {
             $photo = $userForm->get('photo')->getData();
-
+            
             if ($photo) {
                 $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
@@ -65,7 +56,7 @@ class ProfileController extends AbstractController
             $entityManager->persist($currentUser);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_profile');
+           
         }
 
         return $this->render('profile/index.html.twig', [
@@ -73,4 +64,11 @@ class ProfileController extends AbstractController
         ]);
     }
     
+    #[Route('/profile/edit_pwd', name:"edit_password")]
+    public function edit_pwd(Request $request,UserPasswordHasherInterface $passwordHasher)  : Response{
+        $user = $this->getUser();
+        dd($user->getPassword(),$request->get('actPwd'),password_verify($user->getPassword(), $request->get('actPwd')));
+        
+        return $this->render('profile');
+    }
 }
