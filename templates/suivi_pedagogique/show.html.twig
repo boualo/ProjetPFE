@@ -13,15 +13,19 @@
                 <td>{{ suivi.titre }}</td>
             </tr>
             <tr>
-                <th>Nom du Fichier</th>
-                <td>{{ suivi.fichier }}</td>
-            </tr>
-            <tr>
                 <th>Remarque</th>
                 <td>{{ suivi.remarque }}</td>
             </tr>
+            <tr>
+                <th>Le fichier {{ suivi.fichier|slice(0,-4) }} :</th>
+            </tr>
         </tbody>
     </table>
+
+    <embed type="application/pdf"
+       src="/uploads/pdfs/{{ suivi.fichier }}"
+       width="100%"
+       height="500">
 
     <a href="{{ path('app_suivi_edit', {'id': suivi.id}) }}" class="btn btn-success">Modifier</a>
 
