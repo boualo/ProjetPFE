@@ -137,6 +137,19 @@
                 <span class="hide-menu">Calendrier</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a  class="sidebar-link" href="{{ path('app_note') }}" class="dropdown-toggle" data-bs-toggle="dropdown">
+                <span> 
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Notes</span>
+              </a>
+              <ul class="dropdown-menu">
+                  <li><a href="{{ path('app_note') }}" class="dropdown-item">Par éléve</a></li>
+                  <li><a class="dropdown-item" href="#">Par classe</a></li>
+                  <li><a class="dropdown-item" href="#">Import et Export</a></li>
+              </ul>
+            </li>
           </ul>
         </nav>
         <!-- End Sidebar navigation -->
@@ -203,3 +216,4 @@
 </body>
 
 </html>
+

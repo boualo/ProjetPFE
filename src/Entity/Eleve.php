@@ -23,6 +23,9 @@ class Eleve extends Admin
     #[ORM\Column(length: 100)]
     private ?string $lieuNaissance = null;
 
+    #[ORM\ManyToOne(inversedBy: 'eleves')]
+    private ?Group $idGroup = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Eleve extends Admin
     public function setLieuNaissance(string $lieuNaissance): static
     {
         $this->lieuNaissance = $lieuNaissance;
+
+        return $this;
+    }
+
+    public function getIdGroup(): ?Group
+    {
+        return $this->idGroup;
+    }
+
+    public function setIdGroup(?Group $idGroup): static
+    {
+        $this->idGroup = $idGroup;
 
         return $this;
     }

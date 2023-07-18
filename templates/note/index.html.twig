@@ -1,0 +1,50 @@
+{% extends 'including/masterPage.html.twig'  %}
+
+{% block body %}
+    <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Notes</h5>
+              <div class="card">
+                <div class="card-body">
+                    <form method="post" action="">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h5>Niveau scolaire </h5>
+                               
+                                    <select id="schoolLevelSelect" class="form-control" name="idSousNiveau">
+                                        <option value="">Sélectionner </option>
+                                        {% for schoolLevel in schoolLevels %}
+                                            <option value="{{ schoolLevel.id }}">{{ schoolLevel.nom }}</option>
+                                        {% endfor %}
+                                    </select>
+                            </div>
+                            <div class="col-md-4">
+                               
+                                    <h5>Filiere</h5>
+                                    <select id="filiereSelect" class="form-control" name="idFil">
+                                        <option value="">Sélectionner</option>
+                                    </select>
+                                
+                            </div>
+                            <div class="col-md-4 ">
+                                    <h5>Groupe</h5>
+                                    <select id="groupSelect" class="form-control" name="idGroup">
+                                        <option value="">Sélectionner</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div id="content">
+
+                        </div>
+                        
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app2.js') }}"></script>
+{% endblock %}
+
