@@ -28,9 +28,13 @@ class Group
     #[ORM\OneToMany(mappedBy: 'idGroup', targetEntity: Eleve::class)]
     private Collection $eleves;
 
+    #[ORM\ManyToMany(targetEntity: Enseignant::class, mappedBy: 'groupe')]
+    private Collection $enseignants;
+
     public function __construct()
     {
         $this->eleves = new ArrayCollection();
+        $this->enseignants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +103,33 @@ class Group
             if ($elefe->getIdGroup() === $this) {
                 $elefe->setIdGroup(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enseignant>
+     */
+    public function getEnseignants(): Collection
+    {
+        return $this->enseignants;
+    }
+
+    public function addEnseignant(Enseignant $enseignant): static
+    {
+        if (!$this->enseignants->contains($enseignant)) {
+            $this->enseignants->add($enseignant);
+            $enseignant->addGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnseignant(Enseignant $enseignant): static
+    {
+        if ($this->enseignants->removeElement($enseignant)) {
+            $enseignant->removeGroupe($this);
         }
 
         return $this;

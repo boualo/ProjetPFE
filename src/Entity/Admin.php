@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['email'], message: "<span style='color: red;'>Il existe déjà un compte avec cet email</span>")]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name:"role",type:"string")]
-#[ORM\DiscriminatorMap(["admin"=>"Admin", "eleve"=>"Eleve", "tuteur"=>"Tuteur"])]
+#[ORM\DiscriminatorMap(["admin"=>"Admin", "eleve"=>"Eleve", "tuteur"=>"Tuteur","enseignant"=>'Enseignant'])]
 
 class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 {

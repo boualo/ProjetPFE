@@ -3,12 +3,23 @@
 {% block body %}
     <div class="card">
             <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Notes</h5>
+              <h5 class="card-title fw-semibold mb-4">Notes->Import/Export</h5>
               <div class="card">
                 <div class="card-body">
-                    <form method="post" action="">
+                    <div class="col-md-12 ms-2">
+                        
+                        <div class="card" >
+                            <h5>Importer le fichier</h5>
+                            <form method="post" action="{{ path('import_data') }}" enctype="multipart/form-data">
+                                <input type="file" class="form-controle" name="excel_file">
+                                <button type="submit" class="btn btn-primary m-2">Importer</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <form method="post" action="{{ path('export_data') }}">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <h5>Niveau scolaire </h5>
                                
                                     <select id="schoolLevelSelect" class="form-control" name="idSousNiveau">
@@ -18,7 +29,7 @@
                                         {% endfor %}
                                     </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                
                                     <h5>Filiere</h5>
                                     <select id="filiereSelect" class="form-control" name="idFil">
@@ -26,17 +37,23 @@
                                     </select>
                                 
                             </div>
-                            <div class="col-md-4 ">
+                            <div class="col-md-6">
                                     <h5>Groupe</h5>
                                     <select id="groupSelect" class="form-control" name="idGroup">
                                         <option value="">Sélectionner</option>
                                     </select>
                             </div>
-                        </div>
-                        <div id="content">
-
-                        </div>
                         
+                        <div id="myDiv" class="col-md-6 " style="display:none;">
+                            <h5>Semestre</h5>
+                            <select id="semestre" class="form-control" name="idSemester">
+                                <option value="">Sélectionner</option>
+                                <option value="1">1ère semestre</option>
+                                <option value="2">2éme semestre</option>
+                            </select>
+                            <button class="btn btn-primary m-3" type="submit">Exporter</button>
+                        </div>
+                        </div>
                     </form>
                 </div>
               </div>
@@ -46,5 +63,13 @@
 {% block javascripts %}
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/app2.js') }}"></script>
+    <script>
+        const selectOption = document.getElementById('filiereSelect');
+        const myDiv = document.getElementById('myDiv');
+    
+        selectOption.addEventListener('change', function() {
+             myDiv.style.display = 'block';
+        });
+    </script>
 {% endblock %}
 
