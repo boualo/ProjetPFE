@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AnneeScol;
 use App\Entity\Eleve;
 use App\Entity\Note;
 use App\Repository\EleveRepository;
@@ -33,15 +34,17 @@ class NoteController extends AbstractController
     private $repoEleve;
     private $repoGroupe;
     private $repoSousNivScol;
+    private $entityManager;
     private $repoMatiere;
     private $doctrine;
-    public function __construct(FiliereRepository $repoFiliere,NivScolRepository $repoNivScol,SousNiveauScolRepository $repoSousNivScol,EleveRepository $repoEleve,GroupRepository $repoGroupe,MatiereRepository $repoMatiere,ManagerRegistry $doctrine){
+    public function __construct(FiliereRepository $repoFiliere,NivScolRepository $repoNivScol,SousNiveauScolRepository $repoSousNivScol,EleveRepository $repoEleve,GroupRepository $repoGroupe,MatiereRepository $repoMatiere,EntityManagerInterface $entityManager,ManagerRegistry $doctrine){
         $this->repoFiliere = $repoFiliere;
         $this->repoNivScol = $repoNivScol;
         $this->repoSousNivScol = $repoSousNivScol;
         $this->repoMatiere = $repoMatiere;
         $this->repoGroupe = $repoGroupe;
         $this->repoEleve = $repoEleve;
+        $this->entityManager = $entityManager;
     }
     #[Route('/note', name: 'app_note')]
     public function index(): Response
@@ -93,6 +96,11 @@ class NoteController extends AbstractController
         return new JsonResponse($filiereData);
     }
     
+    #[Route('/pageImportNote',name:'pageImportNote')]
+    public function pageImportNote() {
+        return $this->render('note/pageImportNote.html.twig');
+    }
+
     #[Route('/importFile',name:"import_data")]
     public function importData(Request $request,ManagerRegistry $doctrine,EntityManagerInterface $entityManager) :Response
     {
@@ -113,11 +121,25 @@ class NoteController extends AbstractController
             else 
                 $semester=2;
             $date=new \DateTime();
+            $queryBuilder = $this->entityManager->createQueryBuilder();
+
             foreach (array_slice($rows, 6) as $row) {
                 
                 
                 $eleve = $this->findByCodeMassar($row[0],$entityManager);
                 $eleve = $this->repoEleve->findOneBy(['codeMassar'=>$row[0]]);
+                // $queryBuilder
+                // ->select('a', 'g', 'e', 'n')
+                // ->from(AnneeScol::class, 'a')
+                // ->join('a.idGroup', 'g')
+                // ->join('g.eleves', 'e')
+                // ->join('e.notes', 'n')
+                // ->where('a.anneeScol = :anneeScol and e.codeMassar = :codeMassar and n.semester = :semester')
+                // ->setParameter('codeMassar',$anneeScol)
+                // ->setParameter('anneeScol',$anneeScol)
+                // ->setParameter('semester',$semester);
+                // $results = $queryBuilder->getQuery()->getResult();
+                // dd($results);
                 $note = new Note();
                 $note->setEleve($eleve); // Assuming the first column contains the product name
                 $note->setMatiere($matiere); // Assuming the first column contains the product name

@@ -31,6 +31,9 @@ class Group
     #[ORM\ManyToMany(targetEntity: Enseignant::class, mappedBy: 'groupe')]
     private Collection $enseignants;
 
+    #[ORM\ManyToOne(inversedBy: 'idGroup')]
+    private ?AnneeScol $anneeScol = null;
+
     public function __construct()
     {
         $this->eleves = new ArrayCollection();
@@ -136,5 +139,17 @@ class Group
     }
     public function __toString(){
         return $this->nomGroup;
+    }
+
+    public function getAnneeScol(): ?AnneeScol
+    {
+        return $this->anneeScol;
+    }
+
+    public function setAnneeScol(?AnneeScol $anneeScol): static
+    {
+        $this->anneeScol = $anneeScol;
+
+        return $this;
     }
 }
