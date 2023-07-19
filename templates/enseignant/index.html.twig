@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Enseignant index{% endblock %}
+
+{% block body %}
+    <h1>Enseignant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Roles</th>
+                <th>Password</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Adresse</th>
+                <th>Tel</th>
+                <th>Sexe</th>
+                <th>CIN</th>
+                <th>Email</th>
+                <th>Photo</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for enseignant in enseignants %}
+            <tr>
+                <td>{{ enseignant.id }}</td>
+                <td>{{ enseignant.roles ? enseignant.roles|json_encode : '' }}</td>
+                <td>{{ enseignant.password }}</td>
+                <td>{{ enseignant.nom }}</td>
+                <td>{{ enseignant.prenom }}</td>
+                <td>{{ enseignant.adresse }}</td>
+                <td>{{ enseignant.tel }}</td>
+                <td>{{ enseignant.sexe }}</td>
+                <td>{{ enseignant.CIN }}</td>
+                <td>{{ enseignant.email }}</td>
+                <td>{{ enseignant.photo }}</td>
+                <td>
+                    <a href="{{ path('app_enseignant_show', {'id': enseignant.CIN}) }}">show</a>
+                    <a href="{{ path('app_enseignant_edit', {'id': enseignant.CIN}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="12">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_enseignant_new') }}">Create new</a>
+{% endblock %}

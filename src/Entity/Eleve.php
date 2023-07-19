@@ -34,7 +34,7 @@ class Eleve extends Admin
     public function __construct()
     {
         $this->notes = new ArrayCollection();
-    }
+    } 
 
     public function getId(): ?int
     {

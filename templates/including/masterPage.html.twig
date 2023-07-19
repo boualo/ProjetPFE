@@ -137,6 +137,7 @@
                 <span class="hide-menu">Calendrier</span>
               </a>
             </li>
+            {% if app.user.roles[0]=="ROLE_ENSEIGNANT" %}
             <li class="sidebar-item">
               <a  class="sidebar-link" href="{{ path('app_note') }}" class="dropdown-toggle" data-bs-toggle="dropdown">
                 <span> 
@@ -150,6 +151,7 @@
                   <li><a class="dropdown-item" href="#">Import et Export</a></li>
               </ul>
             </li>
+            {% endif %}
           </ul>
         </nav>
         <!-- End Sidebar navigation -->

@@ -18,9 +18,9 @@ class Note
     private ?float $devoire1 = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $dateNote = null;
+    private ?\DateTime $dateNote = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable:true)]
     private ?string $remarque = null;
 
     #[ORM\Column(nullable: true)]
@@ -34,6 +34,11 @@ class Note
 
     #[ORM\ManyToOne(inversedBy: 'notes')]
     private ?Matiere $matiere = null;
+
+    #[ORM\Column]
+    private ?int $semester = null;
+
+    
 
     public function getId(): ?int
     {
@@ -57,7 +62,7 @@ class Note
         return $this->dateNote;
     }
 
-    public function setDateNote(\DateTimeInterface $dateNote): static
+    public function setDateNote($dateNote): static
     {
         $this->dateNote = $dateNote;
 
@@ -123,4 +128,17 @@ class Note
 
         return $this;
     }
+
+    public function getSemester(): ?int
+    {
+        return $this->semester;
+    }
+
+    public function setSemester(int $semester): static
+    {
+        $this->semester = $semester;
+
+        return $this;
+    }
+
 }

@@ -28,6 +28,7 @@ class EnseignantType extends AbstractType
                     'name' => 'nom',
                 ],
             ])
+            
             ->add('adresse' , TextType::class, [
                 'label' => 'Nom',
                 'attr' => [
