@@ -1,0 +1,45 @@
+{% extends 'including/masterPage.html.twig'  %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold m-4">Notes->Par eleve/{} </h5>
+            <h6 class="fw-semibold m-4" style="text-align:right;" ><a href="{{ path('pageImportNote') }}">Importer un fichier-></a></h6>
+            <form method="post" action="{{ path('addNoteParEleve') }}">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="">Nom complet</label>
+                        <input type="text" class="form-control" value="{{ nomComplet }}" disabled>
+                    </div> 
+                    <div class="col-md-4">
+                        <label for="">Code Massar</label>
+                        <input type="text" class="form-control" value="{{ codeMassar }}" disabled>
+                        <input type="text"  value="{{ codeMassar }}" name="codeMassae" hidden>
+                    </div> 
+                    <div class="col-md-4">
+                        <label for="">Semester</label>
+                        <input type="text" class="form-control" value="{{ semester }}" disabled>
+                        <input type="text"  value="{{ idSem }}" name="semester" hidden>
+                    </div> 
+                    <div class="col-md-4">
+                        <label for="">Devoir 1</label>
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire1}}{% endif %}" name="devoir1">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="">Devoir 2</label>
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire2}}{% endif %}" name="devoir2">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="">Devoir 3</label>
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire3}}{% endif %}" name="devoir3">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary m-3" type="submit">Valider</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+

@@ -1,17 +1,17 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-    const schoolLevelSelect = document.getElementById('filiereSelect');
-    const filiereSelect = document.getElementById('groupSelect');
+    const schoolLevelSelect = document.getElementById('groupSelect');
+    const filiereSelect = document.getElementById('eleveSelect');
     
     schoolLevelSelect.addEventListener('change', function() {
       const schoolLevelId = schoolLevelSelect.value;
-      fetchGroupes(schoolLevelId);
+      fetchEleves(schoolLevelId);
     });
 
     
 
-    function fetchGroupes(schoolLevelId) {
-      fetch('/get_groupes', {
+    function fetchEleves(schoolLevelId) {
+      fetch('/get_eleves', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
         filiereSelect.innerHTML = '';
         data.forEach(filiere => {
           const option = document.createElement('option');
-          option.value = filiere.id;
-          option.textContent = filiere.name;
+          option.value = filiere.codeMassar;
+          option.textContent = filiere.nom+" "+filiere.prenom+" CNE: "+filiere.codeMassar;
           filiereSelect.appendChild(option);
         });
       });

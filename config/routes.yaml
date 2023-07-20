@@ -12,6 +12,9 @@ get_filieres:
 get_groupes:
     path: '/get_groupes'
     controller: App\Controller\NoteController::getGroupes
+get_eleves:
+    path: '/get_eleves'
+    controller: App\Controller\NoteController::getEleves
 export_data:
     path: '/export'
     controller: App\Controller\NoteController::exportData

@@ -37,6 +37,7 @@ class NoteController extends AbstractController
     private $entityManager;
     private $repoMatiere;
     private $doctrine;
+
     public function __construct(FiliereRepository $repoFiliere,NivScolRepository $repoNivScol,SousNiveauScolRepository $repoSousNivScol,EleveRepository $repoEleve,GroupRepository $repoGroupe,MatiereRepository $repoMatiere,EntityManagerInterface $entityManager,ManagerRegistry $doctrine){
         $this->repoFiliere = $repoFiliere;
         $this->repoNivScol = $repoNivScol;
@@ -46,16 +47,65 @@ class NoteController extends AbstractController
         $this->repoEleve = $repoEleve;
         $this->entityManager = $entityManager;
     }
+
     #[Route('/note', name: 'app_note')]
     public function index(): Response
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         $schoolLevels = $this->repoSousNivScol->findAll();
         return $this->render('note/index.html.twig', [
             'schoolLevels' => $schoolLevels,
 
         ]);
     }
-   
+
+    #[Route('/noteParEleve', name: 'app_noteParEleve')]
+    public function noteParEleve(): Response
+    {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
+        $schoolLevels = $this->repoSousNivScol->findAll();
+        return $this->render('note/noteParEleve.html.twig', [
+            'schoolLevels' => $schoolLevels,
+
+        ]);
+    }
+
+    #[Route('/addNoteParEleve', name: 'addNoteParEleve')]
+    public function addNoteParEleve(Request $request,EntityManagerInterface $entityManager)
+    {
+        $user=$this->getUser();
+        $eleve = $this->repoEleve->findByCNE($request->get('eleve'));
+        $note=$entityManager->getRepository(Note::class)->findOneBy(['semester'=>$request->get('semester'),'eleve'=>$eleve[0]['id'],'matiere'=>$user->getMatiere()->getId()]);
+        if($request->get('semester') ==  1)
+                $semester="1ére semester";
+            else 
+                $semester="2éme semester";
+        return $this->render('note/ParEleve.html.twig', [
+            'note' => $note,
+            'nomComplet' => $eleve[0]['nom']." ".$eleve[0]['prenom'],
+            'codeMassar' => $eleve[0]['codeMassar'],
+            'matiere' => $user->getMatiere()->getNomMat(),
+            'semester' => $semester,
+            'idSem' => $request->get('semester'),
+
+        ]);
+    }
+
+    #[Route('/ajoutNoteParEleve', name: 'ajoutNoteParEleve')]
+    public function ajoutNoteParEleve(Request $request,EntityManagerInterface $entityManager)
+    {
+        $user=$this->getUser();
+        $eleve = $this->repoEleve->findByCNE($request->get('codeMassar'));
+        $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
+        $note = new Note();
+        $form = $this->createForm(EleveFormType::class, $eleve);
+        $form->handleRequest($request);
+
+        return $this->render('note/ParEleve.html.twig');
+    }
+
     /**
      * @Route("/get_filieres", name="get_filieres", methods={"POST"})
      */
@@ -96,6 +146,28 @@ class NoteController extends AbstractController
         return new JsonResponse($filiereData);
     }
     
+    /**
+     * @Route("/get_eleves", name="get_eleves", methods={"POST"})
+     */
+    public function getEleves(Request $request): JsonResponse
+    {
+        $schoolLevelId = $request->request->get('school_level_id');
+        $schoolLevel = $this->repoGroupe->find($schoolLevelId);
+        
+        $eleves = $schoolLevel->getEleves();
+        $eleveData = [];
+
+        foreach ($eleves as $eleve) {
+            $eleveData[] = [
+                'id' => $eleve->getId(),
+                'nom' => $eleve->getNom(),
+                'prenom' => $eleve->getPrenom(),
+                'codeMassar' => $eleve->getCodeMassar(),
+            ];
+        }
+        return new JsonResponse($eleveData);
+    }
+
     #[Route('/pageImportNote',name:'pageImportNote')]
     public function pageImportNote() {
         return $this->render('note/pageImportNote.html.twig');
@@ -286,4 +358,16 @@ class NoteController extends AbstractController
             ->getResult();
         return $eleve;
    }
+
+//    public function findNoteByCNE($cne,){
+//     $eleveRepository = $entityManager->getRepository(Eleve::class);
+
+//     $eleve = $eleveRepository->createQueryBuilder('e')
+//         ->select('e.id,e.codeMassar,e.dateNaissance,e.lieuNaissance,e.nom,e.prenom,e.adresse,e.tel,e.email')
+//         ->where('e.codeMassar= :role')
+//         ->setParameter('role',$value)
+//         ->getQuery()
+//         ->getResult();
+//     return $eleve;
+//    }
 }

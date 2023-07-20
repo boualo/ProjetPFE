@@ -53,6 +53,18 @@ class EleveRepository extends ServiceEntityRepository
 //            ->getResult()
 //        ;
 //    }
-
+    /**
+    * @return Eleve Returns an  Eleve objects
+    */
+   public function findByCNE($value)
+   {
+       return $this->createQueryBuilder('e')
+           ->select('e.id,e.codeMassar,e.dateNaissance,e.lieuNaissance,e.nom,e.prenom,e.adresse,e.tel,e.email')
+           ->andWhere('e.codeMassar = :val')
+           ->setParameter('val', $value)
+           ->getQuery()
+           ->getResult()
+       ;
+   }
    
 }

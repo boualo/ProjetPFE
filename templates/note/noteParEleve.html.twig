@@ -3,9 +3,9 @@
 {% block body %}
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title fw-semibold m-4">Notes->Import/Export </h5>
+            <h5 class="card-title fw-semibold m-4">Notes->Par eleve </h5>
             <h6 class="fw-semibold m-4" style="text-align:right;" ><a href="{{ path('pageImportNote') }}">Importer un fichier-></a></h6>
-            <form method="post" action="{{ path('export_data') }}">
+            <form method="post" action="{{ path('addNoteParEleve') }}">
                 <div class="row">
                     <div class="col-md-6">
                         <h5>Niveau scolaire </h5>
@@ -28,29 +28,39 @@
                             <option value="">Sélectionner</option>
                         </select>
                     </div>
-                    <div id="myDiv" class="col-md-6 " style="display:none;">
+                    <div id="myDiv" class="col-md-6" style="display:none;">
+                        <h5>Eleve</h5>
+                        <select id="eleveSelect" class="form-control" name="eleve">
+                            <option value="">Sélectionner</option>
+                        </select>
+                    </div>
+                    <div id="myDiv1" class="col-md-6 " style="display:none;">
                         <h5>Semestre</h5>
                         <select id="semestre" class="form-control" name="semester">
                             <option value="">Sélectionner</option>
                             <option value="1">1ère semestre</option>
                             <option value="2">2éme semestre</option>
                         </select>
-                        <button class="btn btn-primary m-3" type="submit">Exporter</button>
+                        <button class="btn btn-primary m-3" type="submit">Valider</button>
                     </div>
                 </div>
             </form>
+            </div>
         </div>
     </div>
 {% endblock %}
 {% block javascripts %}
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app1.js') }}"></script>
     <script src="{{ asset('js/app2.js') }}"></script>
     <script>
-        const selectOption = document.getElementById('filiereSelect');
+        const selectOption = document.getElementById('groupSelect');
         const myDiv = document.getElementById('myDiv');
+        const myDiv1 = document.getElementById('myDiv1');
     
         selectOption.addEventListener('change', function() {
              myDiv.style.display = 'block';
+             myDiv1.style.display = 'block';
         });
     </script>
 {% endblock %}

@@ -37,7 +37,7 @@ class Authenticator extends AbstractLoginFormAuthenticator
             [
                 new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
             ]
-        );
+        ); 
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -47,7 +47,7 @@ class Authenticator extends AbstractLoginFormAuthenticator
         // }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_register'));
+        return new RedirectResponse($this->urlGenerator->generate('app_accueil'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
