@@ -16,18 +16,27 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Filiere</h5>
-                        <select id="filiereSelect" class="form-control" name="idFil">
-                            <option value="">Sélectionner</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Groupe</h5>
-                        <select id="groupSelect" class="form-control" name="idGroup">
-                            <option value="">Sélectionner</option>
-                        </select>
-                    </div>
+                    {% if nivScol ==3 %}
+                        <div class="col-md-6">
+                            <h5>Filiere</h5>
+                            <select id="filiereSelect" class="form-control" name="idFil">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Groupe</h5>
+                            <select id="groupSelect" class="form-control" name="idGroup">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                    {% else %}
+                        <div class="col-md-6">
+                            <h5>Groupe</h5>
+                            <select id="groupSelect1" class="form-control" name="idGroup">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                    {% endif %}
                     <div id="myDiv" class="col-md-6 " style="display:none;">
                         <h5>Semestre</h5>
                         <select id="semestre" class="form-control" name="semester">

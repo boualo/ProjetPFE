@@ -10,7 +10,41 @@
   <script src="https://kit.fontawesome.com/a1820a8459.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.css" integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
   {% block head %} {% endblock %}
-  {% block stylesheets %} {% endblock %}
+  {% block stylesheets %}
+    <style>
+        .parent {
+            display: block;
+            position: relative;
+        }
+        .parent:hover>ul {
+            display: block;
+            position: absolute;
+        }
+
+        .child {
+            display: none;
+            position: absolute;
+
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0px;
+            min-width: 10em;
+        }
+        ul ul ul {
+            left: 50%;
+            top: 0;
+            margin-left: 1px;
+        }
+        .expand {
+            font-size: 12px;
+            float: right;
+            margin-right: 5px;
+        }
+    </style>
+  {% endblock %}
 </head>
 
 <body>
@@ -137,18 +171,50 @@
                 <span class="hide-menu">Calendrier</span>
               </a>
             </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{{ path('activites') }}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-article"></i>
+                </span>
+                <span class="hide-menu">Activités Parascolaires</span>
+              </a>
+            </li>
             {% if app.user.roles[0]=="ROLE_ENSEIGNANT" %}
             <li class="sidebar-item">
-              <a  class="sidebar-link" href="{{ path('app_note') }}" class="dropdown-toggle" data-bs-toggle="dropdown">
+              <a  class="sidebar-link" href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
                 <span> 
                   <i class="ti ti-article"></i>
                 </span>
                 <span class="hide-menu">Notes</span>
               </a>
               <ul class="dropdown-menu">
-                  <li><a href="{{ path('app_note') }}" class="dropdown-item">Par éléve</a></li>
-                  <li><a class="dropdown-item" href="#">Par classe</a></li>
-                  <li><a class="dropdown-item" href="#">Import et Export</a></li>
+                  <li class="parent">
+                    <a href="#" class="dropdown-item">Primaire</a>
+                    <ul class="child dropdown-menu">
+                      <li>
+                        <li><a href="{{ path('app_noteParEleve',{id:1}) }}" class="dropdown-item">Par Elève</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_note',{id:1}) }}">Import et Export</a></li>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="parent">
+                    <a class="dropdown-item" href="#">Collège</a>
+                    <ul class="child dropdown-menu">
+                      <li>
+                        <li><a href="{{ path('app_noteParEleve',{id:2}) }}" class="dropdown-item">Par Elève</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_note',{id:2}) }}">Import et Export</a></li>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="parent">
+                    <a class="dropdown-item" href="#">Lycée</a>
+                    <ul class="child dropdown-menu">
+                      <li>
+                        <li><a href="{{ path('app_noteParEleve',{id:3}) }}" class="dropdown-item">Par Elève</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_note',{id:3}) }}">Import et Export</a></li>
+                      </li>
+                    </ul>
+                  </li>
               </ul>
             </li>
             {% endif %}
@@ -172,8 +238,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link nav-icon-hover" href="javascript:void(0)">
-                <i class="ti ti-bell-ringing"></i>
-                <div class="notification bg-primary rounded-circle"></div>
+                {{ app.user.roles[0]|slice(5) }}
               </a>
             </li>
           </ul>

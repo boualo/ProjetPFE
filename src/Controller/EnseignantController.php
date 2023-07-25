@@ -17,6 +17,8 @@ class EnseignantController extends AbstractController
     #[Route('/', name: 'app_enseignant_index', methods: ['GET'])]
     public function index(EnseignantRepository $enseignantRepository): Response
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         return $this->render('enseignant/index.html.twig', [
             'enseignants' => $enseignantRepository->findAll(),
         ]);

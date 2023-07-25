@@ -15,6 +15,9 @@ get_groupes:
 get_eleves:
     path: '/get_eleves'
     controller: App\Controller\NoteController::getEleves
+get_groupes_Niv:
+    path: '/get_groupes_Niv'
+    controller: App\Controller\NoteController::getGroupesNiv
 export_data:
     path: '/export'
     controller: App\Controller\NoteController::exportData

@@ -20,11 +20,13 @@ class ActiviteParaController extends AbstractController
     #[Route('/ajoutActivite', name: 'add_activite_para')]
     public function add_activite(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger)
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         $activite = new ActivitePara();
         $form = $this->createForm(ActiviteParaType::class, $activite);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $photo = $form->get('photo')->getData();
 
             // this condition is needed because the 'brochure' field is not required

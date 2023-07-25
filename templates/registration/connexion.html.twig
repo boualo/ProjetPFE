@@ -16,10 +16,6 @@
                       {{ form_row(registrationForm.sexe) }}
                       {{ form_row(registrationForm.tel) }}
                       {% if action != 'modifier'%}
-                        {{ form_row(registrationForm.plainPassword, {
-                            label: 'Mot de passe'
-                          }) 
-                        }}
                         <button type="submit" class="btn btn-primary mt-3">Créer</button>
                       {% else %}
                         <button type="submit" class="btn btn-primary mt-3">Modifier</button>

@@ -31,12 +31,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # - { path: ^/admin, roles: ROLE_SUPERADMIN }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/admin, roles: ROLE_DIRECTEUR }
-        - { path: ^/admin, roles: ROLE_ADMINISTRATEUR }
-        - { path: ^/profile, roles: ROLE_USER }
+    #     - { path: ^/admin, roles: ROLE_DIRECTEUR }
+    #     - { path: ^/admin, roles: ROLE_ADMINISTRATEUR }
+        
     role_hierarchy:
         ROLE_DIRECTEUR:       ROLE_ADMIN
+        ROLE_SUPERADMIN:       ROLE_ADMIN
         ROLE_ADMINISTRATEUR:       ROLE_ADMIN
         ROLE_ENSEIGNANT:        ROLE_ADMIN
 when@test:
@@ -51,3 +53,6 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
+framework:
+    csrf_protection:
+        enabled: true

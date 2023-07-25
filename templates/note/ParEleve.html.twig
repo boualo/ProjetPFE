@@ -3,18 +3,18 @@
 {% block body %}
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title fw-semibold m-4">Notes->Par eleve/{} </h5>
-            <h6 class="fw-semibold m-4" style="text-align:right;" ><a href="{{ path('pageImportNote') }}">Importer un fichier-></a></h6>
-            <form method="post" action="{{ path('addNoteParEleve') }}">
+            <h5 class="card-title fw-semibold m-4">Notes->Eleve : {{nomComplet}} </h5>
+            <h6 class="fw-semibold m-4" style="text-align:right;" ><a href="{{ path('addNoteParEleve') }}"><-Retour</a></h6>
+            <form method="post" action="{{ path('ajoutNoteParEleve') }}">
                 <div class="row">
                     <div class="col-md-4">
-                        <label for="">Nom complet</label>
+                        <label for="">Nom complet</label> 
                         <input type="text" class="form-control" value="{{ nomComplet }}" disabled>
                     </div> 
                     <div class="col-md-4">
                         <label for="">Code Massar</label>
                         <input type="text" class="form-control" value="{{ codeMassar }}" disabled>
-                        <input type="text"  value="{{ codeMassar }}" name="codeMassae" hidden>
+                        <input type="text"  value="{{ codeMassar }}" name="codeMassar" hidden>
                     </div> 
                     <div class="col-md-4">
                         <label for="">Semester</label>

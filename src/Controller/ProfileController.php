@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Form\EleveFormType;
+use App\Form\EnseignantType;
 use App\Form\RegistrationFormType;
+use App\Form\TuteurFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -27,15 +29,21 @@ class ProfileController extends AbstractController
     {
         if(!$this->getUser())
             $this->redirectToRoute('app_login');
+
         $currentUser = $this->getUser();
-        if($currentUser->getRoles()[0]=="ROLE_ADMIN")
+        if($currentUser->getRoles()[0]=="ROLE_ADMIN" or $currentUser->getRoles()[0]=="ROLE_SUPERADMIN")
             $userForm = $this->createForm(RegistrationFormType::class, $currentUser);
-        else
+        elseif($currentUser->getRoles()[0]=="ROLE_ELEVE")
             $userForm = $this->createForm(EleveFormType::class, $currentUser);
+        elseif($currentUser->getRoles()[0]=="ROLE_ENSEIGNANT")
+            $userForm = $this->createForm(EnseignantType::class, $currentUser);
+        else
+            $userForm = $this->createForm(TuteurFormType::class, $currentUser);
+
         $userForm->handleRequest($request);
-        if ($userForm->isSubmitted()) {
+        
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
             $photo = $userForm->get('photo')->getData();
-            
             if ($photo) {
                 $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
@@ -69,6 +77,6 @@ class ProfileController extends AbstractController
         $user = $this->getUser();
         dd($user->getPassword(),$request->get('actPwd'),password_verify($user->getPassword(), $request->get('actPwd')));
         
-        return $this->render('profile');
+        return $this->redirectToRoute('app_profile');
     }
 }

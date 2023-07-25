@@ -18,9 +18,12 @@ use Symfony\Component\HttpFoundation\Response;
 #[Route('/suivipedagogique')]
 class SuiviPedagogiqueController extends AbstractController
 {
+    
     #[Route('/', name: 'app_suivi_index', methods: ['GET'])]
     public function index(SuiviPedagogiqueRepository $suiviPedagogiqueRepository): Response
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         return $this->render('suivi_pedagogique/index.html.twig', [
             'suivis' => $suiviPedagogiqueRepository->findAll(),
         ]);

@@ -30,6 +30,7 @@ class Note
     private ?float $devoire3 = null;
 
     #[ORM\ManyToOne(inversedBy: 'notes')]
+    
     private ?Eleve $eleve = null;
 
     #[ORM\ManyToOne(inversedBy: 'notes')]

@@ -3,14 +3,15 @@
 namespace App\Form;
 
 use App\Entity\Admin;
+use App\Validator\Constraints;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
@@ -20,20 +21,42 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
+                'constraints' => [
+                    new Constraints(),
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => 'Le nom ne peut pas dépasser 20 caractères.',
+                    ]),
+                ],
                 'label' => 'Nom',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'nom',
                 ],
             ])
+
             ->add('prenom', TextType::class, [
+                'constraints' => [
+                    new Constraints(),
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => 'Le nom ne peut pas dépasser 20 caractères.',
+                    ]),
+                ],
                 'label' => 'Prénom',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'prenom',
                 ],
             ])
+            
             ->add('adresse', TextType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 100,
+                        'maxMessage' => 'L\'adresse ne peut pas dépasser 100 caractères.',
+                    ]),
+                ],
                 'label' => 'Adresse',
                 'attr' => [
                     'class' => 'form-control',
@@ -41,13 +64,29 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('tel', TextType::class, [
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^0[0-9]{9}$/',
+                        'message' => 'Veuillez entrer un numéro de téléphone valide.',
+                    ]),
+                    new Length([
+                        'max' => 10,
+                        'maxMessage' => 'Le téléphone ne peut pas dépasser 10 caractères.',
+                    ]),
+                ],
                 'label' => 'Téléphone',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'tel',
                 ],
             ])
-            ->add('CIN', TextType::class, [
+            ->add('CIN', TextType::class,[
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^[A-Z]{1,2}[0-9]{5,7}$/',
+                        'message' => 'Veuillez entrer un CIN valide.',
+                    ]),
+                ],
                 'label' => 'CIN',
                 'attr' => [
                     'class' => 'form-control',
@@ -55,34 +94,20 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             
-            ->add('email', TextType::class, [
+            ->add('email', EmailType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'L\'email ne peut pas dépasser 30 caractères.',
+                    ]),
+                ],
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'form-control',
                     'name' => 'email',
                 ],
             ])
-            
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                    'autocomplete' => 'new-password'
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Entrer un mot de passe',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Votre mot de passe doit comporter au moins {{ limit }} caractères',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                ],
-            ])
+
             ->add('sexe',ChoiceType::class, [
                 'label' => 'Sexe',
                 'choices' => [

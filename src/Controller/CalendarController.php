@@ -17,6 +17,8 @@ class CalendarController extends AbstractController
     #[Route('/', name: 'app_calendar_index', methods: ['GET'])]
     public function index(CalendarRepository $calendarRepository): Response
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         return $this->render('calendar/index.html.twig', [
             'calendars' => $calendarRepository->findAll(),
         ]);

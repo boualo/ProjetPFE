@@ -4,7 +4,13 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title fw-semibold m-4">Notes->Par eleve </h5>
-            <h6 class="fw-semibold m-4" style="text-align:right;" ><a href="{{ path('pageImportNote') }}">Importer un fichier-></a></h6>
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
             <form method="post" action="{{ path('addNoteParEleve') }}">
                 <div class="row">
                     <div class="col-md-6">
@@ -16,18 +22,29 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Filiere</h5>
-                        <select id="filiereSelect" class="form-control" name="idFil">
-                            <option value="">Sélectionner</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Groupe</h5>
-                        <select id="groupSelect" class="form-control" name="idGroup">
-                            <option value="">Sélectionner</option>
-                        </select>
-                    </div>
+
+                     {% if nivScol ==3 %}
+                        <div class="col-md-6">
+                            <h5>Filiere</h5>
+                            <select id="filiereSelect" class="form-control" name="idFil">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Groupe</h5>
+                            <select id="groupSelect" class="form-control" name="idGroup">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                    {% else %}
+                        <div class="col-md-6">
+                            <h5>Groupe</h5>
+                            <select id="groupSelect1" class="form-control" name="idGroup">
+                                <option value="">Sélectionner</option>
+                            </select>
+                        </div>
+                    {% endif %}
+
                     <div id="myDiv" class="col-md-6" style="display:none;">
                         <h5>Eleve</h5>
                         <select id="eleveSelect" class="form-control" name="eleve">

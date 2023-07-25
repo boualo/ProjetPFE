@@ -10,19 +10,26 @@
             <div class="card-body">
               <h5 class="card-title fw-semibold mb-4 " style="float:left;">Eléves</h5>
               <p>
-                <a href="{{ path('add_eleve') }}" type="button" class="btn btn-outline-secondary" style="float:right;">Ajout</a>
+                <a href="{{ path('add_eleve') }}" type="button" class="btn btn-outline-secondary" style="float:right;">Ajouter</a>
               </p>
               <div class="card mt-5">
-                <div class="card-body">
+              {% for type, messages in app.flashes %}
+                  {% for message in messages %}
+                      <div class="alert alert-{{ type }}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              {% endfor %}
+                <div class="card-body row">
                 {% for eleve in eleves %}
                   <div class="col-md-3">
-                    <div class="card" style="width:100%;height:95%;">
+                    <div class="card">
                       <img src="../assets/images/profile/user-1.jpg" style="max-height:25%;" alt="..." >
                       <div class="card-body" style="height:10%">
-                        <p class="card-title m-0 p-0" style="font-size:15px;">
+                        <p class="card-title m-0 p-0" style="font-size:14px;">
                           <b>Nom : </b>{{eleve.nom}}
-                          <b>Prénom : </b>{{eleve.prenom}}
-                          <b>CNE : </b>{{eleve.codeMassar}}
+                          <b>Prénom:</b>{{eleve.prenom}}</br>
+                          <b>CNE :</b>{{eleve.codeMassar}}
                         </p>
                         <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-right">
                           <a href="{{ path('eleve' , {id:eleve.id}) }}">

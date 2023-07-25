@@ -26,26 +26,25 @@ class RegistrationController extends AbstractController
     #[Route('/inscription', name: 'app_register')]
     public function register(Request $request,UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_USER');
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         $session = $this->requestStack->getSession();
         $user = new Admin();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         $title= $session->get('title');
-            
+        
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
+                $userPasswordHasher->hashPassword($user,$form->get('CIN')->getData())
             );
             $role= $session->get('currRole');
             $user->setRoles([$role]);
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
+            $this->addFlash('success', 'Ajouter avec succès et le mot de passe est '. $form->get('CIN')->getData());
 
             return $this->redirectToRoute('admins_by_role',[
                 'role'=>$role,
@@ -63,6 +62,8 @@ class RegistrationController extends AbstractController
     #[Route('/admins/{role}', name:"admins_by_role")]
     public function getAdminsByRole($role, EntityManagerInterface $entityManager)
     {
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         $session = $this->requestStack->getSession();
         switch($role) {
             case 'admin':
@@ -100,15 +101,15 @@ class RegistrationController extends AbstractController
                 'title' => $this->getTitle($role)
             ]);
     }
-
-    #[Route('/Modifier/{id}',name:"show_admin")]
-    public function show($id,Request $request,EntityManagerInterface $entityManager) {
+       
+    #[Route('/Modifier/{cin}',name:"show_admin")]
+    public function show($cin,Request $request,EntityManagerInterface $entityManager) {
         $session = $this->requestStack->getSession();
-        $admin=$this->adminRepo->find($id);
+        $admin=$this->adminRepo->findOneBy(['CIN'=>$cin]);
         $title = $session->get('title');
         $form = $this->createForm(RegistrationFormType::class,$admin);
         $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             
             $role= $session->get('currRole');
@@ -130,11 +131,11 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/delete/{id}' , name:'delete')]
-    public function delete(int $id,EntityManagerInterface $entityManager) : RedirectResponse{
+    #[Route('/admin/delete/{cin}' , name:'delete')]
+    public function delete($cin,EntityManagerInterface $entityManager) : RedirectResponse{
         $session = $this->requestStack->getSession();
         
-        $admin = $entityManager->getRepository(Admin::class)->find($id);
+        $admin = $entityManager->getRepository(Admin::class)->findOneBy(['CIN'=>$cin]);
         $entityManager->remove($admin);
         $entityManager->flush();
         $role= $session->get('currRole');

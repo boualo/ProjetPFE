@@ -24,25 +24,25 @@ class EleveController extends AbstractController{
     #[Route('/ajoutEleve','add_eleve')]
     public function add_eleve(Request $request, UserPasswordHasherInterface $elevePasswordHasher, EntityManagerInterface $entityManager){
 
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
+        if(!$this->getUser())
+            return $this->redirectToRoute('app_login') ;
         $eleve = new Eleve();
         $form = $this->createForm(EleveFormType::class, $eleve);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             // encode the plain password
             $eleve->setPassword(
                 $elevePasswordHasher->hashPassword(
                     $eleve,
-                    $form->get('plainPassword')->getData()
+                    $form->get('codeMassar')->getData()
                 )
             );
-            $eleve->setRoles(['ROLE_ELEVE']);
+           $eleve->setRoles(['ROLE_ELEVE']);
             $entityManager->persist($eleve);
             $entityManager->flush();
             // do anything else you need here, like send an email
-
+            $this->addFlash('success', 'Ajouter avec succès et le mot de passe est'. $form->get('codeMassar')->getData());
             return $this->redirectToRoute('eleves');
         }
 
@@ -71,8 +71,26 @@ class EleveController extends AbstractController{
     #[Route('/eleve/{id}' , name:'delete_eleve')]
     public function delete($id,EntityManagerInterface $entityManager) : RedirectResponse{
         $eleve = $entityManager->getRepository(Eleve::class)->find($id);
+        if (!$eleve) {
+            throw $this->createNotFoundException('Eleve avec l\'ID '.$id.' pas trouvé.');
+        }
+
+        // Retrieve the related Note entities
+        $notes = $eleve->getNotes();
+
+        // Remove the Eleve entity and its related Note entities
         $entityManager->remove($eleve);
+        foreach ($notes as $note) {
+            $entityManager->remove($note);
+        }
+
+        // Flush the changes to the database to perform the deletion
         $entityManager->flush();
+
+        // Optionally, add a flash message to provide feedback to the user
+        $this->addFlash('success', 'Eleve a été supprimé avec succès.');
+
+        // $eleve->removeNote($eleve->getNom())
         return $this->redirectToRoute('eleves');
     }
 
@@ -87,24 +105,25 @@ class EleveController extends AbstractController{
 
     #[Route('/edit_eleve/{id}' , name:'edit_eleve')]
     public function edit($id,Request $request,ManagerRegistry $doctrine,EntityManagerInterface $entityManager){
-        $eleve = $doctrine->getRepository(Eleve::class)->find($id);
-        
-        $form= $this->createForm(EleveFormType::class,$eleve);
+        $entityManager = $doctrine->getManager();
+        $user = $entityManager->getRepository(Eleve::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User with ID '.$id.' not found.');
+        }
+        // dd($request);
+        $form = $this->createForm(EleveFormType::class, $user);
         $form->handleRequest($request);
-        
-        if($form->isSubmitted() && $form->isValid()){
-            $eleve->setCodeMassar($form->get('codeMassar')->getData());
-            $eleve->setNom($form->get('nom')->getData());
-            $eleve->setPrenom($form->get('prenom')->getData());
-            $eleve->setEmail($form->get('email')->getData());
-            $eleve->setAdresse($form->get('adresse')->getData());
-            $eleve->setSexe($form->get('sexe')->getData());
-            $eleve->setDateNaissance($form->get('dateNaissance')->getData());
-            $eleve->setLieuNaissance($form->get('lieuNaissance')->getData());
-            $eleve->setTel($form->get('tel')->getData());
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // The form is valid, update the user entity with the submitted data
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_eleve');
+            // Optionally, add a flash message to provide feedback to the user
+            $this->addFlash('success', 'User updated successfully.');
+
+            // Redirect the user to a different page or return a response
+            return $this->redirectToRoute('eleves');
         }
         return $this->render('eleve/modifierEleve.html.twig',[
             'registrationForm' => $form->createView(),

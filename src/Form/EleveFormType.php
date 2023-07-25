@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Eleve;
-use PharIo\Manifest\Email;
+use App\Validator\Constraints;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,12 +16,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Regex;
 class EleveFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('nom', TextType::class, [
+                'constraints' => [
+                    new Constraints(),
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => 'Le nom ne peut pas dépasser 20 caractères.',
+                    ]),
+                ],
                 'label' => 'Nom',
                 'attr' => [
                     'class' => 'form-control',
@@ -29,6 +37,13 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('prenom', TextType::class, [
+                'constraints' => [
+                    new Constraints(),
+                    new Length([
+                        'max' => 20,
+                        'maxMessage' => "Le nom ne peut pas dépasser 20 caractères.",
+                    ]),
+                ],
                 'label' => 'Prénom',
                 'attr' => [
                     'class' => 'form-control',
@@ -36,6 +51,12 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('adresse', TextType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 100,
+                        'maxMessage' => 'L\'adresse ne peut pas dépasser 100 caractères.',
+                    ]),
+                ],
                 'label' => 'Adresse',
                 'attr' => [
                     'class' => 'form-control',
@@ -43,6 +64,16 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('tel', TextType::class, [
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^0[0-9]{9}$/',
+                        'message' => 'Veuillez entrer un numéro de téléphone valide.',
+                    ]),
+                    new Length([
+                        'max' => 10,
+                        'maxMessage' => 'Le téléphone ne peut pas dépasser 10 caractères.',
+                    ]),
+                ],
                 'label' => 'Téléphone',
                 'attr' => [
                     'class' => 'form-control',
@@ -50,6 +81,12 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('email', EmailType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'L\'email ne peut pas dépasser 30 caractères.',
+                    ]),
+                ],
                 'label' => 'Email',
                 'attr' => [
                     'class' => 'form-control',
@@ -117,6 +154,12 @@ class EleveFormType extends AbstractType
                 ]
             ])
             ->add('codeMassar', TextType::class, [
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^[A-Z]{1}[0-9]{9}$/',
+                        'message' => 'Veuillez entrer un CNE valide composé d\'un caractère et de 9 chiffres.',
+                    ]),
+                ],
                 'label' => 'Code Massar',
                 'attr' => [
                     'class' => 'form-control',
@@ -132,6 +175,13 @@ class EleveFormType extends AbstractType
                 ],
             ])
             ->add('lieuNaissance', TextType::class, [
+                'constraints' => [
+                    new Constraints(),
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'Lieu de naissance ne peut pas dépasser 30 caractères.',
+                    ]),
+                ],
                 'label' => 'Lieu de Naissance',
                 'attr' => [
                     'class' => 'form-control',

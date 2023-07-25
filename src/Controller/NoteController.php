@@ -48,27 +48,27 @@ class NoteController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/note', name: 'app_note')]
-    public function index(): Response
+    #[Route('/note/{id}', name: 'app_note')]
+    public function index($id): Response
     {
         if(!$this->getUser())
             return $this->redirectToRoute('app_login') ;
-        $schoolLevels = $this->repoSousNivScol->findAll();
+        $schoolLevels = $this->repoSousNivScol->findBy(['niveauScol'=>$id]);
         return $this->render('note/index.html.twig', [
             'schoolLevels' => $schoolLevels,
-
+            'nivScol' => $id
         ]);
     }
 
-    #[Route('/noteParEleve', name: 'app_noteParEleve')]
-    public function noteParEleve(): Response
+    #[Route('/noteParEleve/{id}', name: 'app_noteParEleve')]
+    public function noteParEleve($id): Response
     {
         if(!$this->getUser())
             return $this->redirectToRoute('app_login') ;
-        $schoolLevels = $this->repoSousNivScol->findAll();
+        $schoolLevels = $this->repoSousNivScol->findBy(['niveauScol'=>$id]);
         return $this->render('note/noteParEleve.html.twig', [
             'schoolLevels' => $schoolLevels,
-
+            'nivScol' => $id
         ]);
     }
 
@@ -97,13 +97,56 @@ class NoteController extends AbstractController
     public function ajoutNoteParEleve(Request $request,EntityManagerInterface $entityManager)
     {
         $user=$this->getUser();
-        $eleve = $this->repoEleve->findByCNE($request->get('codeMassar'));
+        $eleve = $this->repoEleve->findOneBy(['codeMassar' => $request->get('codeMassar')]);
         $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
-        $note = new Note();
-        $form = $this->createForm(EleveFormType::class, $eleve);
-        $form->handleRequest($request);
+        $id=$eleve->getIdGroup()->getNiveau()->getNiveauScol()->getId();
+        if($note==null)
+            $note = new Note();
+        $date = new \DateTime();
+        if(!empty($request->get('devoir1')))
+        {
+            $note->setEleve($eleve);
+            $note->setSemester($request->get('semester'));
+            $note->setMatiere($user->getMatiere());
+            $note->setDateNote(new DateTime($date->format("Y-m-d")));
+            $note->setDevoire1($request->get('devoir1'));
+            if(!empty($request->get('devoir2'))){
+                $note->setDevoire2($request->get('devoir2'));
+                if(!empty($request->get('devoir3')))
+                    $note->setDevoire3($request->get('devoir3'));
+            }
+                
+        }
+       $entityManager->persist($note);
+       $entityManager->flush();
+       $this->addFlash('success', 'Note ajoutée avec succès!');
+       return $this->redirectToRoute('app_noteParEleve',['id' => $id]);
+    }
 
-        return $this->render('note/ParEleve.html.twig');
+    #[Route('/noteAddEdit', name:'noteAddEdit')]
+    public function noteAddEdit(Request $request , EntityManagerInterface $entityManager){
+        $eleve = $this->repoEleve->findOneBy(['codeMassar' => $request->get('codeMassar')]);
+        $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
+        $id=$eleve->getIdGroup()->getNiveau()->getNiveauScol()->getId();
+        
+        $admin=$this->adminRepo->findOneBy(['CIN'=>$cin]);
+        $title = $session->get('title');
+        $form = $this->createForm(RegistrationFormType::class,$admin);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            
+            $role= $session->get('currRole');
+            $admin->setRoles([$role]);
+            $entityManager->persist($admin);
+            $entityManager->flush();
+            // do anything else you need here, like send an email
+
+            return $this->redirectToRoute('admins_by_role',[
+                'role'=>$role,
+                'title' => $title
+            ]);;
+        }
     }
 
     /**
@@ -146,6 +189,26 @@ class NoteController extends AbstractController
         return new JsonResponse($filiereData);
     }
     
+    /**
+     * @Route("/get_groupes_Niv", name="get_groupes", methods={"POST"})
+     */
+    public function getGroupesNiv(Request $request): JsonResponse
+    {
+        $schoolLevelId = $request->request->get('school_level_id');
+        $schoolLevel = $this->repoFiliere->find($schoolLevelId);
+
+        $groupes = $schoolLevel->getIdGroup();
+        $filiereData = [];
+
+        foreach ($groupes as $groupe) {
+            $filiereData[] = [
+                'id' => $groupe->getId(),
+                'name' => $groupe->getNomGroup(),
+            ];
+        }
+        return new JsonResponse($filiereData);
+    }
+
     /**
      * @Route("/get_eleves", name="get_eleves", methods={"POST"})
      */
@@ -233,7 +296,7 @@ class NoteController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('list_etudiant');
+            return $this->redirectToRoute('pageImportNote');
         }
 
         return $this->render('note/index.html.twig');

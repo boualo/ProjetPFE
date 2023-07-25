@@ -72,7 +72,21 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
        ;
    }
 
-   
+   public function countTotalAdmins(): int {
+    return $this->createQueryBuilder('a')
+        ->select('COUNT(a.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+
+    public function findByEmail($email) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "SELECT * FROM admin WHERE email = :email";
+
+        $resultSet = $conn->executeQuery($sql, ['email' => $email]);
+        return $resultSet->fetchAllAssociative();
+    }
 
 //    public function findOneBySomeField($value): ?Admin
 //    {
