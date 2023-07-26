@@ -23,12 +23,6 @@ class UpdatePasswordFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Mot de passe', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'Nouveau mot de passe',
-                    'class' => 'form-control',
-                ],
-            ])
             ->add('update', SubmitType::class, [
                 'label' => 'Modifier',
                 'attr' => [

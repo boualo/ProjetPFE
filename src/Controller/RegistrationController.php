@@ -6,7 +6,6 @@ use App\Entity\Admin;
 use App\Form\RegistrationFormType;
 use App\Repository\AdminRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +18,7 @@ class RegistrationController extends AbstractController
 {
     
     private $adminRepo;
-    public function __construct(AdminRepository $adminRepository,private RequestStack $requestStack,){
+    public function __construct(AdminRepository $adminRepository,private RequestStack $requestStack){
         $this->adminRepo = $adminRepository;
     }
 
@@ -35,7 +34,7 @@ class RegistrationController extends AbstractController
         $title= $session->get('title');
         
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
+           
             $user->setPassword(
                 $userPasswordHasher->hashPassword($user,$form->get('CIN')->getData())
             );
@@ -43,7 +42,7 @@ class RegistrationController extends AbstractController
             $user->setRoles([$role]);
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
+
             $this->addFlash('success', 'Ajouter avec succès et le mot de passe est '. $form->get('CIN')->getData());
 
             return $this->redirectToRoute('admins_by_role',[

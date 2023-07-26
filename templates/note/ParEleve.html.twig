@@ -23,18 +23,22 @@
                     </div> 
                     <div class="col-md-4">
                         <label for="">Devoir 1</label>
-                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire1}}{% endif %}" name="devoir1">
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire1}}{% endif %}" name="devoir1" pattern="^(1[0-9]|20|[1-9])(\.[0-9]{1,2})?$" title="la note ne doit pas être supérieure à 20 et la partie décimale doit être composée de deux chiffres" required>
                     </div>
                     <div class="col-md-4">
                         <label for="">Devoir 2</label>
-                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire2}}{% endif %}" name="devoir2">
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire2}}{% endif %}" name="devoir2" pattern="^(1[0-9]|20|[1-9])(\.[0-9]{1,2})?$" title="la note ne doit pas être supérieure à 20 et la partie décimale doit être composée de deux chiffres">
                     </div>
                     <div class="col-md-4">
                         <label for="">Devoir 3</label>
-                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire3}}{% endif %}" name="devoir3">
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.devoire3}}{% endif %}" name="devoir3" pattern="^(1[0-9]|20|[1-9])(\.[0-9]{1,2})?$" title="la note ne doit pas être supérieure à 20 et la partie décimale doit être composée de deux chiffres">
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-primary m-3" type="submit">Valider</button>
+                     <div class="col-md-6">
+                        <label for="">Remarque</label>
+                        <input type="text" class="form-control" value="{% if note != null %}{{note.remarque}}{% endif %}" name="remarque" pattern="[A-Za-z]{5,100}" title="remarque doit étre entre 5 et 200 characters .">
+                    </div>
+                    <div class="col-md-4 m-4">
+                        <button  class="btn btn-primary" type="submit">Valider</button>
                     </div>
                 </div>
             </form>

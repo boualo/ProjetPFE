@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AnneeScol;
 use App\Entity\Eleve;
 use App\Entity\Note;
+use App\Form\NoteType;
 use App\Repository\EleveRepository;
 use App\Repository\FiliereRepository;
 use App\Repository\GroupRepository;
@@ -18,6 +19,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Symfony\Component\HttpFoundation\RequestStack;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -38,7 +40,7 @@ class NoteController extends AbstractController
     private $repoMatiere;
     private $doctrine;
 
-    public function __construct(FiliereRepository $repoFiliere,NivScolRepository $repoNivScol,SousNiveauScolRepository $repoSousNivScol,EleveRepository $repoEleve,GroupRepository $repoGroupe,MatiereRepository $repoMatiere,EntityManagerInterface $entityManager,ManagerRegistry $doctrine){
+    public function __construct(FiliereRepository $repoFiliere,private RequestStack $requestStack,NivScolRepository $repoNivScol,SousNiveauScolRepository $repoSousNivScol,EleveRepository $repoEleve,GroupRepository $repoGroupe,MatiereRepository $repoMatiere,EntityManagerInterface $entityManager,ManagerRegistry $doctrine){
         $this->repoFiliere = $repoFiliere;
         $this->repoNivScol = $repoNivScol;
         $this->repoSousNivScol = $repoSousNivScol;
@@ -51,8 +53,11 @@ class NoteController extends AbstractController
     #[Route('/note/{id}', name: 'app_note')]
     public function index($id): Response
     {
+        $session=$this->requestStack->getSession();
         if(!$this->getUser())
             return $this->redirectToRoute('app_login') ;
+        if($id)
+           $session->set('idNivScolEx',$id);
         $schoolLevels = $this->repoSousNivScol->findBy(['niveauScol'=>$id]);
         return $this->render('note/index.html.twig', [
             'schoolLevels' => $schoolLevels,
@@ -63,8 +68,12 @@ class NoteController extends AbstractController
     #[Route('/noteParEleve/{id}', name: 'app_noteParEleve')]
     public function noteParEleve($id): Response
     {
+        $session=$this->requestStack->getSession();
         if(!$this->getUser())
             return $this->redirectToRoute('app_login') ;
+        if($id)
+           $session->set('idNivScol', $id);
+
         $schoolLevels = $this->repoSousNivScol->findBy(['niveauScol'=>$id]);
         return $this->render('note/noteParEleve.html.twig', [
             'schoolLevels' => $schoolLevels,
@@ -75,9 +84,18 @@ class NoteController extends AbstractController
     #[Route('/addNoteParEleve', name: 'addNoteParEleve')]
     public function addNoteParEleve(Request $request,EntityManagerInterface $entityManager)
     {
+        $session = $this->requestStack->getSession();
+        if($request->get('eleve'))
+            $session->set('cne',$request->get('eleve'));
+        if($session->get('cne'))
+            $cne = $session->get('cne');
+
         $user=$this->getUser();
-        $eleve = $this->repoEleve->findByCNE($request->get('eleve'));
+        $eleve = $this->repoEleve->findByCNE($cne);
         $note=$entityManager->getRepository(Note::class)->findOneBy(['semester'=>$request->get('semester'),'eleve'=>$eleve[0]['id'],'matiere'=>$user->getMatiere()->getId()]);
+        if($note==null)
+            $note = new Note();
+
         if($request->get('semester') ==  1)
                 $semester="1ére semester";
             else 
@@ -89,23 +107,23 @@ class NoteController extends AbstractController
             'matiere' => $user->getMatiere()->getNomMat(),
             'semester' => $semester,
             'idSem' => $request->get('semester'),
-
         ]);
     }
 
-    #[Route('/ajoutNoteParEleve', name: 'ajoutNoteParEleve')]
+    #[Route('/ajoutNoteParEleve', name:'ajoutNoteParEleve')]
     public function ajoutNoteParEleve(Request $request,EntityManagerInterface $entityManager)
     {
+        $session = $this->requestStack->getSession();
         $user=$this->getUser();
-        $eleve = $this->repoEleve->findOneBy(['codeMassar' => $request->get('codeMassar')]);
-        $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
-        $id=$eleve->getIdGroup()->getNiveau()->getNiveauScol()->getId();
-        if($note==null)
-            $note = new Note();
+        $eleve = $this->repoEleve->findByCNE(['codeMassar' => $request->get('codeMassar')]);
+        $eleveNote = $this->repoEleve->find($eleve[0]['id']);
+      
+        $note=$entityManager->getRepository(Note::class)->findOneBy(['semester'=>$request->get('semester'),'eleve'=>$eleve[0]['id'],'matiere'=>$user->getMatiere()->getId()]);
+        $id=$session->get('idNivScol');
         $date = new \DateTime();
         if(!empty($request->get('devoir1')))
         {
-            $note->setEleve($eleve);
+            $note->setEleve($eleveNote);
             $note->setSemester($request->get('semester'));
             $note->setMatiere($user->getMatiere());
             $note->setDateNote(new DateTime($date->format("Y-m-d")));
@@ -115,7 +133,7 @@ class NoteController extends AbstractController
                 if(!empty($request->get('devoir3')))
                     $note->setDevoire3($request->get('devoir3'));
             }
-                
+            $note->setRemarque($request->get('remarque'));
         }
        $entityManager->persist($note);
        $entityManager->flush();
@@ -123,31 +141,31 @@ class NoteController extends AbstractController
        return $this->redirectToRoute('app_noteParEleve',['id' => $id]);
     }
 
-    #[Route('/noteAddEdit', name:'noteAddEdit')]
-    public function noteAddEdit(Request $request , EntityManagerInterface $entityManager){
-        $eleve = $this->repoEleve->findOneBy(['codeMassar' => $request->get('codeMassar')]);
-        $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
-        $id=$eleve->getIdGroup()->getNiveau()->getNiveauScol()->getId();
+    // #[Route('/noteAddEdit', name:'ajoutNoteParEleve')]
+    // public function noteAddEdit(Request $request , EntityManagerInterface $entityManager){
+    //     $eleve = $this->repoEleve->findOneBy(['codeMassar' => $request->get('codeMassar')]);
+    //     $note=$entityManager->getRepository(Note::class)->findOneBy(['id'=>$request->get('semester')]);
+    //     $user=$this->getUser();
+    //     $eleve = $this->repoEleve->findByCNE($request->get('eleve'));
         
-        $admin=$this->adminRepo->findOneBy(['CIN'=>$cin]);
-        $title = $session->get('title');
-        $form = $this->createForm(RegistrationFormType::class,$admin);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            
-            $role= $session->get('currRole');
-            $admin->setRoles([$role]);
-            $entityManager->persist($admin);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
+    //    $form = $this->createForm(NoteType::class,$note);
+    //     $form->handleRequest($request);
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $id=$eleve->getIdGroup()->getNiveau()->getNiveauScol()->getId();
+        
+    //         // encode the plain password 
+    //         $entityManager->persist($note);
+    //         $entityManager->flush();
+    //         // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('admins_by_role',[
-                'role'=>$role,
-                'title' => $title
-            ]);;
-        }
-    }
+    //         return $this->redirectToRoute('app_noteParEleve',[
+    //             'id'=>$id
+    //         ]);
+    //     }
+    //     return $this->render('accueil/index.html.twig',[
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
     /**
      * @Route("/get_filieres", name="get_filieres", methods={"POST"})
@@ -240,7 +258,10 @@ class NoteController extends AbstractController
     public function importData(Request $request,ManagerRegistry $doctrine,EntityManagerInterface $entityManager) :Response
     {
         $excelFile = $request->files->get('excel_file');
-
+        
+        $allowedExtensions = ['xls', 'xlsx'];
+        $fileExtension = $excelFile->getClientOriginalExtension();
+        if (in_array(strtolower($fileExtension), $allowedExtensions)) {
         if ($excelFile) {
             $spreadsheet = IOFactory::load($excelFile);
             $worksheet = $spreadsheet->getActiveSheet();
@@ -298,19 +319,30 @@ class NoteController extends AbstractController
 
             return $this->redirectToRoute('pageImportNote');
         }
-
+    }
+    else
+      {
+        $this->addFlash('danger','le fichier doit étre en format excel');
+        return $this->redirectToRoute('pageImportNote');
+      }
         return $this->render('note/index.html.twig');
     }
 
     #[Route('/export' , name:'export_data')]
     public function exportData(Request $request,ManagerRegistry $doctrine): Response
     {
+        $session=$this->requestStack->getSession();
         $user=$this->getUser();
         // Fetch the data from the database
         $entityManager = $doctrine->getManager();
         $eleveRepository = $entityManager->getRepository(Eleve::class);
         $eleves = $eleveRepository->findAll();
-
+        if($eleves==null) {
+            $this->addFlash('danger','Aucun étudiant dans ce groupe');
+            if($session->get('idNivScolEx'))
+               $id=$session->get('idNivScolEx');
+            return $this->redirectToRoute('app_note',['id'=>$id]);
+        }
         // Create a new Spreadsheet and set its properties
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()
@@ -421,16 +453,4 @@ class NoteController extends AbstractController
             ->getResult();
         return $eleve;
    }
-
-//    public function findNoteByCNE($cne,){
-//     $eleveRepository = $entityManager->getRepository(Eleve::class);
-
-//     $eleve = $eleveRepository->createQueryBuilder('e')
-//         ->select('e.id,e.codeMassar,e.dateNaissance,e.lieuNaissance,e.nom,e.prenom,e.adresse,e.tel,e.email')
-//         ->where('e.codeMassar= :role')
-//         ->setParameter('role',$value)
-//         ->getQuery()
-//         ->getResult();
-//     return $eleve;
-//    }
 }

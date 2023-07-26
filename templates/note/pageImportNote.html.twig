@@ -3,6 +3,14 @@
 {% block body %}
     <div class="card">
             <div class="card-body">
+                {% for type,messages in app.flashes %}
+       {% for message in messages %}
+         <div class="alert alert-{{type}}">
+            {{message}}
+         </div>
+       {% endfor %}
+    {% endfor %}
+
                 <h5 class="card-title fw-semibold m-4" style="float:left;">Notes->Import/Export</h5>
                 <h6 class="fw-semibold m-4" style="text-align:right;"><a href="{{ path('app_note',{id:3}) }}"><-Exporter</a></h6>
                  <p style="color:red; text-align:left;">
@@ -11,7 +19,7 @@
                 <div class="col-md-12 ms-2" >
                     <h5>Importer le fichier</h5>
                     <form method="post" action="{{ path('import_data') }}" enctype="multipart/form-data">
-                        <input type="file" class="form-controle" name="excel_file">
+                        <input type="file" class="form-controle" name="excel_file" required accept=".xls, .xlsx">
                         <button type="submit" class="btn btn-primary m-2">Importer</button>
                     </form>
                 </div>

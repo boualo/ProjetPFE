@@ -25,8 +25,9 @@ class RecupController extends AbstractController {
     }
 
     #[Route('/verifAlert', name:'verifier')]
-    public function verifAlert() {
-        return $this->render('mail/verifAlert.html.twig', []);
+    public function verifAlert(Request $request) {
+        
+        return $this->render('mail/verifAlert.html.twig');
     }
 
     #[Route('/motPasseRecuperation', name:'recup_mot_passe')]
@@ -61,22 +62,31 @@ class RecupController extends AbstractController {
         $form->handleRequest($req);
 
         if ($form->isSubmitted()) {
-            $data = $form->getData();
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $data->getPassword()
-                )
-            );
-            // $user->setPassword($data->getPassword());
-            $entityManager->persist($user);
-            $entityManager->flush();
+            if($req->get('newPwd') == $req->get('conNewPwd'))
+            {
+                $data = $form->getData();
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,$req->get('newPwd')
+                    )
+                );
+                // $user->setPassword($data->getPassword());
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->addFlash('success','Le mot de passe a été modifié.');
+                
+                return $this->redirectToRoute('app_login');
+            }
+            else
+            {
+                $this->addFlash('danger','Les mots de passe ne sont pas identiques.');
+            }
 
-            return $this->redirectToRoute('app_login');
         }
         return $this->render('mail/updatePassword.html.twig', [
             'updateForm' => $form->createView(),
             'user' => $user,
+            'id' => $id
         ]);
     }
 }
